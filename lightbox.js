@@ -10,9 +10,17 @@ prev.addEventListener('click', () => {
 	console.log('click');
 });
 
+function preventScroll(e) {
+	if (e.ctrlKey) e.preventDefault(); //prevent zoom
+}
+
 imgs.forEach((img) => {
 	img.addEventListener('click', ({ target }) => {
+		document.body.addEventListener('wheel', preventScroll, {
+			passive: false,
+		});
 		lightbox.classList.add('show');
+		document.body.style.overflowY = 'hidden';
 		const img = document.querySelector('img');
 
 		const current = imgs.find(
@@ -51,8 +59,12 @@ display.addEventListener('click', ({ clientX, clientY, target }) => {
 	else unzoom();
 });
 lightbox.addEventListener('click', ({ clientX, clientY, target }) => {
-	// Exit if click is not on lightbox background
 	if (!target.classList.contains('lightbox')) return;
+	unzoom();
+	document.body.style.overflowY = 'visible';
+	document.body.removeEventListener('wheel', preventScroll);
+
+	// Exit if click is not on lightbox background
 	const bounds = display.getBoundingClientRect();
 
 	const logs = {
