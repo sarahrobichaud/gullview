@@ -1,0 +1,93 @@
+* {
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+		Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+		sans-serif;
+}
+
+main {
+	max-width: 1000px;
+	padding: 0 2rem;
+	margin: 0 auto;
+}
+
+#gallery {
+	display: grid;
+	gap: 2rem;
+	grid-template-columns: 1fr;
+}
+
+.img-card {
+	display: flex;
+	padding: 1rem;
+	border-radius: 10px;
+	border: gray 1px solid;
+	transition: transform 200ms ease-in-out;
+}
+
+.img-card:hover {
+	cursor: pointer;
+	transform: scale(1.1);
+}
+
+#gallery img {
+	object-fit: cover;
+	height: 300px;
+	width: 100%;
+}
+
+@media (min-width: 640px) {
+	#gallery {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+}
+@media (min-width: 1000px) {
+	#gallery {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+}
+
+.lightbox {
+	display: none;
+	position: absolute;
+	inset: 0;
+	padding: 0;
+	gap: 1rem;
+	justify-content: center;
+	align-items: center;
+	backdrop-filter: blur(20px);
+	background-color: rgba(0, 0, 0, 0.6);
+	z-index: 2;
+}
+.lightbox.show {
+	display: flex;
+}
+.lightbox__img {
+	width: 50vw;
+	object-fit: contain;
+	max-height: calc(100vh - 2rem);
+}
+.lightbox button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: transparent;
+	border: none;
+}
+.lightbox button:hover {
+	cursor: pointer;
+}
+.lightbox button svg {
+	stroke: white;
+}
+
+#debug {
+	font-family: monospace;
+	position: absolute;
+	font-size: 2rem;
+	inset: 0;
+	pointer-events: none;
+	z-index: 3;
+	color: red;
+}
