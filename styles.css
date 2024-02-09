@@ -4,6 +4,10 @@
 		sans-serif;
 }
 
+body {
+	color: #fff;
+	background: #000;
+}
 main {
 	max-width: 1000px;
 	padding: 0 2rem;
@@ -61,12 +65,18 @@ main {
 	z-index: 2;
 }
 .lightbox.show {
+	overflow: hidden;
 	display: flex;
 }
 .lightbox__img {
 	width: 50vw;
 	object-fit: contain;
+	cursor: zoom-in;
 	max-height: calc(100vh - 2rem);
+	transition: transform 200ms ease-in-out;
+}
+.lightbox__img.zoomed {
+	cursor: zoom-out;
 }
 .lightbox button {
 	display: flex;
@@ -83,6 +93,7 @@ main {
 }
 
 #debug {
+	display: none;
 	font-family: monospace;
 	position: absolute;
 	font-size: 2rem;
