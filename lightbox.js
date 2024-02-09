@@ -6,9 +6,30 @@ const [prev, next] = document.querySelectorAll('.lightbox button');
 
 const debugDisplay = document.querySelector('#debug');
 
-prev.addEventListener('click', () => {
-	console.log('click');
-});
+function handleNext() {
+	const current = imgs.find(
+		(i) =>
+			i.querySelector('img').getAttribute('src') ===
+			display.getAttribute('src')
+	);
+	const next = imgs[imgs.indexOf(current) + 1];
+	if (!next) return;
+	display.setAttribute('src', next.querySelector('img').getAttribute('src'));
+}
+
+function handlePrev() {
+	const current = imgs.find(
+		(i) =>
+			i.querySelector('img').getAttribute('src') ===
+			display.getAttribute('src')
+	);
+	const prev = imgs[imgs.indexOf(current) - 1];
+	if (!prev) return;
+	display.setAttribute('src', prev.querySelector('img').getAttribute('src'));
+}
+
+prev.addEventListener('click', handlePrev);
+next.addEventListener('click', handleNext);
 
 function preventScroll(e) {
 	if (e.ctrlKey) e.preventDefault(); //prevent zoom
@@ -36,25 +57,41 @@ imgs.forEach((img) => {
 	});
 });
 
-function offsetClick(clientX, clientY, bounds) {
+function offsetPos(clientX, clientY, bounds) {
 	const offsetX = (clientX - bounds.left) / bounds.width;
 	const offsetY = (clientY - bounds.top) / bounds.height;
 	return { offsetX, offsetY };
 }
 
+// movement offset for zoom
+
 function zoom({ offsetX, offsetY }, level = 3) {
 	display.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
 	display.classList.add('zoomed');
+	prev.style.visibility = 'hidden';
+	next.style.visibility = 'hidden';
 	display.style.transform = `scale(${level})`;
+
+	const bounds = display.getBoundingClientRect();
+
+	window.addEventListener('mousemove', (e) => {
+		const { clientX, clientY } = e;
+		const offsets = offsetPos(clientX, clientY, bounds);
+		display.style.transformOrigin = `${offsets.offsetX * 100}% ${
+			offsets.offsetY * 100
+		}%`;
+	});
 }
 function unzoom() {
 	display.classList.remove('zoomed');
 	display.style.transform = '';
+	prev.style.visibility = 'visible';
+	next.style.visibility = 'visible';
 }
 
 display.addEventListener('click', ({ clientX, clientY, target }) => {
 	const bounds = target.getBoundingClientRect();
-	const offsets = offsetClick(clientX, clientY, bounds);
+	const offsets = offsetPos(clientX, clientY, bounds);
 	if (display.style.transform === '') zoom(offsets);
 	else unzoom();
 });
