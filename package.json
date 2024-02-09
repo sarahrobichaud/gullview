@@ -1,0 +1,16 @@
+{
+	"name": "lightbox",
+	"version": "1.0.0",
+	"description": "A simple lightbox for images",
+	"main": "esbuild.js",
+	"scripts": {
+		"build:watch": "esbuild --watch --bundle src/lightbox.js --outfile=dist/lightbox.js",
+		"build": "esbuild --bundle src/lightbox.js--outfile=dist/lightbox.js"
+	},
+	"keywords": [],
+	"author": "Sarah Robichaud",
+	"license": "MIT",
+	"devDependencies": {
+		"esbuild": "^0.20.0"
+	}
+}

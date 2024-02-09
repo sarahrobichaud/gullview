@@ -57,7 +57,6 @@ main {
 	position: fixed;
 	inset: 0;
 	padding: 0;
-	gap: 1rem;
 	justify-content: center;
 	align-items: center;
 	backdrop-filter: blur(40px);
@@ -90,7 +89,7 @@ main {
 	background: transparent;
 	border: none;
 }
-.lightbox button:hover {
+.lightbox .lightbox button:hover {
 	cursor: pointer;
 }
 .lightbox button svg {
