@@ -69,7 +69,7 @@ main {
 	overflow: hidden;
 	display: flex;
 }
-.lightbox__img {
+.lightbox__display {
 	border-radius: 1rem;
 	object-fit: contain;
 	box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -78,7 +78,7 @@ main {
 	max-height: calc(100vh - 10rem);
 	transition: transform 200ms ease-in-out;
 }
-.lightbox__img.zoomed {
+.lightbox__display.zoomed {
 	cursor: zoom-out;
 }
 .lightbox button {

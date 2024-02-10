@@ -4,8 +4,8 @@
 	"description": "A simple lightbox for images",
 	"main": "esbuild.js",
 	"scripts": {
-		"build:watch": "esbuild --watch --bundle src/lightbox.js --outfile=dist/lightbox.js",
-		"build": "esbuild --bundle src/lightbox.js--outfile=dist/lightbox.js"
+		"build:watch": "esbuild --watch --bundle src/index.ts --outfile=dist/lightbox.js",
+		"build": "esbuild --bundle src/index.ts--outfile=dist/lightbox.js"
 	},
 	"keywords": [],
 	"author": "Sarah Robichaud",
