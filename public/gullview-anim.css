@@ -1,0 +1,32 @@
+@keyframes gv_next {
+	0% {
+		rotate: -10deg;
+		filter: saturate(0);
+		translate: 100vw;
+		opacity: 0;
+		scale: 0.5;
+	}
+	100% {
+		scale: 1;
+		opacity: 1;
+		filter: saturate(1);
+		rotate: 0;
+	}
+}
+@keyframes gv_prev {
+	0% {
+		scale: 1;
+		filter: saturate(1);
+		opacity: 1;
+		translate: 0;
+	}
+
+	100% {
+		opacity: 0;
+		scale: 0;
+		filter: saturate(0);
+		scale: 0.5;
+		translate: -100vw;
+		rotate: 10deg;
+	}
+}

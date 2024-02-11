@@ -10,19 +10,28 @@ export type ImageObject = {
 	};
 };
 
-type LightboxConfig = {
+export type LightboxConfig = {
 	targetClass: string;
+	zoom: {
+		level: number;
+	};
+	animation: {
+		animate: boolean;
+		duration: number;
+		next?: string;
+		prev?: string;
+	};
 };
-
-const ui = new UI();
 
 export default class Lightbox {
 	private backImages: Array<ImageObject>;
 	private backCurrentImage: ImageObject;
+	private readonly ui: UI;
 
 	readonly backConfig: LightboxConfig;
 
 	constructor(config: LightboxConfig) {
+		this.ui = new UI(config.zoom, config.animation);
 		this.images = Array.from(
 			document.querySelectorAll(`.${config.targetClass}`)
 		);
@@ -49,7 +58,7 @@ export default class Lightbox {
 
 		if (jumping) direction = direction === 'next' ? 'prev' : 'next';
 
-		ui.updateSource(value.image, ui.isOpen, 200, direction);
+		this.ui.updateSource(value.image, this.ui.isOpen, direction);
 		this.backCurrentImage = value;
 	}
 
@@ -97,7 +106,7 @@ export default class Lightbox {
 
 	private handleOpen(e: MouseEvent, element: ImageObject) {
 		this.currentImage = element;
-		ui.open(e, element);
+		this.ui.open(e, element);
 	}
 
 	private handleNext() {
@@ -129,7 +138,7 @@ export default class Lightbox {
 			);
 		});
 
-		Object.values(ui.buttons).forEach((arrow) => {
+		Object.values(this.ui.buttons).forEach((arrow) => {
 			arrow.addEventListener('click', (e) => {
 				e.stopPropagation();
 				if (arrow.classList.contains('prev')) this.handlePrev();

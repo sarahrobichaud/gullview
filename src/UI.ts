@@ -1,9 +1,25 @@
-import { ImageObject } from './Lightbox';
+import { ImageObject, LightboxConfig } from './Lightbox';
 
 interface UIElement {
 	prev: HTMLButtonElement;
 	next: HTMLButtonElement;
 }
+
+const defaultAnimations = {
+	animate: true,
+	duration: 600,
+	next: 'gv_next',
+	prev: 'gv_prev',
+} satisfies LightboxConfig['animation'];
+
+const defaultZoom = {
+	level: 1.5,
+} satisfies LightboxConfig['zoom'];
+
+type UIConfig = {
+	animation: LightboxConfig['animation'];
+	zoom: LightboxConfig['zoom'];
+};
 
 export class UI {
 	private backBackground: HTMLDivElement;
@@ -13,7 +29,12 @@ export class UI {
 	private backIsOpen: boolean = false;
 	private animationQueue = Array<ReturnType<typeof setTimeout>>();
 
-	constructor() {
+	private config = {} as UIConfig;
+
+	constructor(
+		zoomConfig: LightboxConfig['zoom'], // Zoom level and
+		animationConfig: LightboxConfig['animation']
+	) {
 		this.background = document.querySelector('.lightbox');
 		this.handleCursorOffset = this.handleCursorOffset.bind(this);
 
@@ -37,6 +58,46 @@ export class UI {
 		this.background.addEventListener('click', this.close.bind(this));
 
 		this.display.addEventListener('click', this.handleZoom.bind(this));
+
+		this.config.animation = { ...defaultAnimations, ...animationConfig };
+		this.config.zoom = { ...defaultZoom, ...zoomConfig };
+
+		this.injectCSSClasses();
+	}
+
+	private injectCSSClasses() {
+		const head = document.head || document.getElementsByTagName('head')[0];
+		const style = document.createElement('style');
+
+		const nextKF = this.config?.animation?.next || defaultAnimations.next;
+		const prevKF = this.config?.animation?.prev || defaultAnimations.prev;
+		const duration =
+			(this.config?.animation?.duration || defaultAnimations.duration) /
+			2;
+
+		const css = `
+			.lightbox__display.slideIn.next {
+    			animation: ${nextKF} ${duration}ms normal forwards;
+				animation-timing-function: ease-out;
+			}
+
+			.lightbox__display.slideOut.next {
+    			animation: ${prevKF} ${duration}ms normal forwards;
+				animation-timing-function: ease-in;
+			}
+
+			.lightbox__display.slideIn.prev {
+    			animation: ${prevKF} ${duration}ms reverse forwards;
+				animation-timing-function: ease-out;
+			}
+
+			.lightbox__display.slideOut.prev {
+				animation-timing-function: ease-in;
+    			animation: ${nextKF} ${duration}ms reverse forwards;
+			}
+			`;
+		head.appendChild(style);
+		style.appendChild(document.createTextNode(css));
 	}
 
 	get display() {
@@ -120,7 +181,7 @@ export class UI {
 		this.buttons.next.style.visibility = 'visible';
 		window.removeEventListener('mousemove', this.handleCursorOffset);
 	}
-	private zoom({ offsetX, offsetY }, level = 3) {
+	private zoom({ offsetX, offsetY }, level = this.config.zoom.level) {
 		this.display.style.transformOrigin = `${offsetX * 100}% ${
 			offsetY * 100
 		}%`;
@@ -169,35 +230,34 @@ export class UI {
 		this.background.classList.remove('show');
 	};
 
-	private animateSwap(
-		direction: 'prev' | 'next' = 'next',
-		animationDuration: number
-	) {
+	private animateSwap(direction: 'prev' | 'next' = 'next') {
 		const inClasses = ['slideIn', direction];
 		const outClasses = ['slideOut', direction];
+
 		this.display.classList.add(...outClasses);
 
 		this.animationQueue.push(
 			setTimeout(() => {
 				this.display.classList.remove(...outClasses);
 				this.display.classList.add(...inClasses);
-			}, animationDuration)
+			}, this.config.animation.duration / 2)
 		);
 
 		this.animationQueue.push(
 			setTimeout(() => {
 				this.display.classList.remove(...inClasses);
-			}, animationDuration * 2)
+			}, this.config.animation.duration)
 		);
 	}
 
 	public updateSource = (
 		image: ImageObject['image'],
 		animate: boolean = true,
-		animationDuration: number = 200,
 		direction: 'prev' | 'next' = 'next'
 	) => {
-		this.animationQueue.forEach((timeout) => clearTimeout(timeout));
+		// Clear old timeouts
+		[...this.animationQueue].forEach((timeout) => clearTimeout(timeout));
+		this.animationQueue.splice(0);
 
 		if (!animate) {
 			this.display.setAttribute('src', image.src);
@@ -205,13 +265,19 @@ export class UI {
 			return;
 		}
 
-		this.animateSwap(direction, animationDuration);
+		if (this.config.animation.animate) this.animateSwap(direction);
 
+		// Update source
 		this.animationQueue.push(
-			setTimeout(() => {
-				this.display.setAttribute('src', image.src);
-				this.display.setAttribute('alt', image.alt);
-			}, animationDuration)
+			setTimeout(
+				() => {
+					this.display.setAttribute('src', image.src);
+					this.display.setAttribute('alt', image.alt);
+				},
+				this.config.animation.animate
+					? this.config.animation.duration / 2
+					: 0
+			)
 		);
 	};
 }
