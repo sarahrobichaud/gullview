@@ -16,7 +16,7 @@ type LightboxConfig = {
 
 const ui = new UI();
 
-export class Lightbox {
+export default class Lightbox {
 	private backImages: Array<ImageObject>;
 	private backCurrentImage: ImageObject;
 
@@ -38,8 +38,23 @@ export class Lightbox {
 	}
 
 	set currentImage(value: ImageObject) {
-		ui.updateSource(value.image);
+		const jumping =
+			(this.currentImage?.index === this.images.length - 1 &&
+				value.index === 0) ||
+			(this.currentImage?.index === 0 &&
+				value.index === this.images.length - 1);
+
+		let direction: 'next' | 'prev' =
+			value.index > this.currentImage?.index ? 'next' : 'prev';
+
+		if (jumping) direction = direction === 'next' ? 'prev' : 'next';
+
+		ui.updateSource(value.image, ui.isOpen, 200, direction);
 		this.backCurrentImage = value;
+	}
+
+	get images(): ImageObject[] {
+		return this.backImages;
 	}
 
 	set images(value: unknown[]) {
@@ -80,13 +95,9 @@ export class Lightbox {
 		this.backImages = imageObjects;
 	}
 
-	get images(): ImageObject[] {
-		return this.backImages;
-	}
-
 	private handleOpen(e: MouseEvent, element: ImageObject) {
-		ui.open(e, element);
 		this.currentImage = element;
+		ui.open(e, element);
 	}
 
 	private handleNext() {
@@ -118,7 +129,7 @@ export class Lightbox {
 			);
 		});
 
-		Object.values(ui.arrows).forEach((arrow) => {
+		Object.values(ui.buttons).forEach((arrow) => {
 			arrow.addEventListener('click', (e) => {
 				e.stopPropagation();
 				if (arrow.classList.contains('prev')) this.handlePrev();

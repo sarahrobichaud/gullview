@@ -1,10 +1,10 @@
-import { Lightbox } from './Lightbox.ts';
-import { UI } from './UI.ts';
+import Lightbox from './Lightbox.ts';
 
 try {
-	new Lightbox({
+	const lightbox = new Lightbox({
 		targetClass: 'lightbox__src',
-	}).init();
+	});
+	lightbox.init();
 } catch (e) {
 	console.error(`Error: ${e.message}`);
 }

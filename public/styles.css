@@ -20,7 +20,7 @@ main {
 	grid-template-columns: 1fr;
 }
 
-.img-card {
+.lightbox__src {
 	display: flex;
 	padding: 1rem;
 	border-radius: 10px;
@@ -28,7 +28,7 @@ main {
 	transition: transform 200ms ease-in-out;
 }
 
-.img-card:hover {
+.lightbox__src:hover {
 	cursor: pointer;
 	transform: scale(1.1);
 }
@@ -74,39 +74,47 @@ main {
 	object-fit: contain;
 	box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 	cursor: zoom-in;
-	max-width: calc(100vw - 10rem);
+	max-width: calc(100vw - 12rem);
 	max-height: calc(100vh - 10rem);
 	transition: transform 200ms ease-in-out;
 }
+
 .lightbox__display.zoomed {
 	cursor: zoom-out;
 }
-.lightbox button {
+
+.lightbox__arrow.next {
+	position: absolute;
+	right: 0;
+}
+.lightbox__arrow.prev {
+	position: absolute;
+	left: 0;
+}
+
+.lightbox__arrow {
 	display: flex;
 	padding: 2rem;
 	justify-content: center;
 	align-items: center;
 	background: transparent;
 	border: none;
+	opacity: 0.6;
+	transition: transform 200ms ease-in-out, opacity 200ms ease-in-out;
 }
-.lightbox .lightbox button:hover {
+.lightbox__arrow:hover {
 	cursor: pointer;
+	transform: scale(1.4);
+	opacity: 1;
 }
-.lightbox button svg {
+.lightbox__arrow:active {
+	cursor: pointer;
+	transform: scale(1);
+	opacity: 0.3;
+}
+.lightbox__arrow svg {
 	stroke: white;
 }
-
-#debug {
-	display: none;
-	font-family: monospace;
-	position: absolute;
-	font-size: 2rem;
-	inset: 0;
-	pointer-events: none;
-	z-index: 3;
-	color: red;
-}
-
 @-webkit-keyframes fade-in {
 	0% {
 		opacity: 0;
@@ -122,4 +130,67 @@ main {
 	100% {
 		opacity: 1;
 	}
+}
+@keyframes slideInFromLeft {
+	0% {
+		transform: translateX(-100vw);
+		scale: 0.5;
+		opacity: 0;
+	}
+	100% {
+		transform: translateX(0);
+		scale: 1;
+		opacity: 100;
+	}
+}
+@keyframes slideInFromRight {
+	0% {
+		transform: translateX(100vw);
+		scale: 0.5;
+		opacity: 0;
+	}
+	100% {
+		transform: translateX(0);
+		scale: 1;
+		opacity: 100;
+	}
+}
+
+@keyframes slideOutToRight {
+	0% {
+		transform: translateX(0);
+		scale: 1;
+		opacity: 100;
+	}
+	100% {
+		transform: translateX(100vw);
+		scale: 0.5;
+		opacity: 0;
+	}
+}
+@keyframes slideOutToLeft {
+	0% {
+		transform: translateX(0);
+		scale: 1;
+		opacity: 100;
+	}
+	100% {
+		transform: translateX(-100vw);
+		scale: 0.5;
+		opacity: 0;
+	}
+}
+
+.lightbox__display.slideIn.next {
+	animation: slideInFromRight 200ms forwards;
+}
+.lightbox__display.slideIn.prev {
+	animation: slideInFromLeft 200ms forwards;
+}
+
+.lightbox__display.slideOut.next {
+	animation: slideOutToLeft 200ms forwards;
+}
+.lightbox__display.slideOut.prev {
+	animation: slideOutToRight 200ms forwards;
 }

@@ -1,6 +1,6 @@
 import { ImageObject } from './Lightbox';
 
-interface Arrows {
+interface UIElement {
 	prev: HTMLButtonElement;
 	next: HTMLButtonElement;
 }
@@ -8,10 +8,14 @@ interface Arrows {
 export class UI {
 	private backBackground: HTMLDivElement;
 	private backDisplay: HTMLImageElement;
-	private backArrows = {} as Arrows;
+	private backButtons = {} as UIElement;
+
+	private backIsOpen: boolean = false;
+	private animationQueue = Array<ReturnType<typeof setTimeout>>();
 
 	constructor() {
 		this.background = document.querySelector('.lightbox');
+		this.handleCursorOffset = this.handleCursorOffset.bind(this);
 
 		const display = document.createElement('img');
 		display.classList.add('lightbox__display');
@@ -19,14 +23,16 @@ export class UI {
 
 		this.backDisplay = display;
 
-		const { prev, next } = {
+		const arrows = {
 			prev: this.createArrow('prev'),
 			next: this.createArrow('next'),
 		};
 
-		this.background.appendChild(prev);
 		this.background.appendChild(display);
-		this.background.appendChild(next);
+
+		Object.values(arrows).forEach((arrow) => {
+			this.background.appendChild(arrow);
+		});
 
 		this.background.addEventListener('click', this.close.bind(this));
 
@@ -37,8 +43,16 @@ export class UI {
 		return this.backDisplay;
 	}
 
-	get arrows() {
-		return this.backArrows;
+	get buttons() {
+		return this.backButtons;
+	}
+
+	get isOpen() {
+		return this.backIsOpen;
+	}
+
+	private set isOpen(value: boolean) {
+		this.backIsOpen = value;
 	}
 
 	get background(): HTMLDivElement {
@@ -79,8 +93,8 @@ export class UI {
 
 		arrowContainer.innerHTML = dir === 'prev' ? leftArrow : rightArrow;
 
-		arrowContainer.classList.add('arrow', dir);
-		this.arrows[dir] = arrowContainer;
+		arrowContainer.classList.add('lightbox__arrow', dir);
+		this.buttons[dir] = arrowContainer;
 		this.background.appendChild(arrowContainer);
 		return arrowContainer;
 	}
@@ -102,27 +116,29 @@ export class UI {
 	private unzoom() {
 		this.display.classList.remove('zoomed');
 		this.display.style.transform = '';
-		this.arrows.prev.style.visibility = 'visible';
-		this.arrows.next.style.visibility = 'visible';
+		this.buttons.prev.style.visibility = 'visible';
+		this.buttons.next.style.visibility = 'visible';
+		window.removeEventListener('mousemove', this.handleCursorOffset);
 	}
 	private zoom({ offsetX, offsetY }, level = 3) {
 		this.display.style.transformOrigin = `${offsetX * 100}% ${
 			offsetY * 100
 		}%`;
 		this.display.classList.add('zoomed');
-		this.arrows.prev.style.visibility = 'hidden';
-		this.arrows.next.style.visibility = 'hidden';
+		this.buttons.prev.style.visibility = 'hidden';
+		this.buttons.next.style.visibility = 'hidden';
 		this.display.style.transform = `scale(${level})`;
 
-		const bounds = this.display.getBoundingClientRect();
+		window.addEventListener('mousemove', this.handleCursorOffset);
+	}
 
-		window.addEventListener('mousemove', (e) => {
-			const { clientX, clientY } = e;
-			const offsets = this.offsetPos(clientX, clientY, bounds);
-			this.display.style.transformOrigin = `${offsets.offsetX * 100}% ${
-				offsets.offsetY * 100
-			}%`;
-		});
+	private handleCursorOffset(e) {
+		const { clientX, clientY } = e;
+		const bounds = this.display.getBoundingClientRect();
+		const offsets = this.offsetPos(clientX, clientY, bounds);
+		this.display.style.transformOrigin = `${offsets.offsetX * 100}% ${
+			offsets.offsetY * 100
+		}%`;
 	}
 
 	private allowScroll() {
@@ -138,8 +154,9 @@ export class UI {
 
 		this.blockZoom();
 		this.blockScroll();
-		this.updateSource(element.image);
+		this.updateSource(element.image, false);
 		this.background.classList.add('show');
+		this.isOpen = true;
 	};
 
 	public close = (e: MouseEvent) => {
@@ -148,11 +165,53 @@ export class UI {
 		this.unzoom();
 		this.allowZoom();
 		this.allowScroll();
+		this.isOpen = false;
 		this.background.classList.remove('show');
 	};
 
-	public updateSource = (image: ImageObject['image']) => {
-		this.display.setAttribute('src', image.src);
-		this.display.setAttribute('alt', image.alt);
+	private animateSwap(
+		direction: 'prev' | 'next' = 'next',
+		animationDuration: number
+	) {
+		const inClasses = ['slideIn', direction];
+		const outClasses = ['slideOut', direction];
+		this.display.classList.add(...outClasses);
+
+		this.animationQueue.push(
+			setTimeout(() => {
+				this.display.classList.remove(...outClasses);
+				this.display.classList.add(...inClasses);
+			}, animationDuration)
+		);
+
+		this.animationQueue.push(
+			setTimeout(() => {
+				this.display.classList.remove(...inClasses);
+			}, animationDuration * 2)
+		);
+	}
+
+	public updateSource = (
+		image: ImageObject['image'],
+		animate: boolean = true,
+		animationDuration: number = 200,
+		direction: 'prev' | 'next' = 'next'
+	) => {
+		this.animationQueue.forEach((timeout) => clearTimeout(timeout));
+
+		if (!animate) {
+			this.display.setAttribute('src', image.src);
+			this.display.setAttribute('alt', image.alt);
+			return;
+		}
+
+		this.animateSwap(direction, animationDuration);
+
+		this.animationQueue.push(
+			setTimeout(() => {
+				this.display.setAttribute('src', image.src);
+				this.display.setAttribute('alt', image.alt);
+			}, animationDuration)
+		);
 	};
 }
