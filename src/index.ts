@@ -2,8 +2,9 @@ import { Lightbox } from './Lightbox.ts';
 import { UI } from './UI.ts';
 
 try {
-	const lightbox = new Lightbox();
-	lightbox.print();
+	new Lightbox({
+		targetClass: 'lightbox__src',
+	}).init();
 } catch (e) {
 	console.error(`Error: ${e.message}`);
 }
