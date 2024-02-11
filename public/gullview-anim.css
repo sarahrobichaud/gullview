@@ -30,3 +30,21 @@
 		rotate: 10deg;
 	}
 }
+
+@keyframes custom_next {
+	0% {
+		scale: 0;
+	}
+	100% {
+		scale: 1;
+	}
+}
+
+@keyframes custom_prev {
+	0% {
+		scale: 1;
+	}
+	100% {
+		scale: 0;
+	}
+}

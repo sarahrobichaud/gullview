@@ -3,40 +3,59 @@ import { ImageObject, LightboxConfig } from './Lightbox';
 interface UIElement {
 	prev: HTMLButtonElement;
 	next: HTMLButtonElement;
+	counter: HTMLSpanElement;
 }
+
+export type UIConfig = {
+	animation: {
+		animate: boolean;
+		duration: number;
+		next: string;
+		prev: string;
+	};
+	zoom: {
+		level: number;
+	};
+	counter: {
+		show: boolean;
+	};
+};
 
 const defaultAnimations = {
 	animate: true,
 	duration: 600,
 	next: 'gv_next',
 	prev: 'gv_prev',
-} satisfies LightboxConfig['animation'];
+} satisfies UIConfig['animation'];
 
 const defaultZoom = {
 	level: 1.5,
-} satisfies LightboxConfig['zoom'];
+} satisfies UIConfig['zoom'];
 
-type UIConfig = {
-	animation: LightboxConfig['animation'];
-	zoom: LightboxConfig['zoom'];
-};
+const defaultCounter = {
+	show: false,
+} satisfies UIConfig['counter'];
 
 export class UI {
 	private backBackground: HTMLDivElement;
 	private backDisplay: HTMLImageElement;
-	private backButtons = {} as UIElement;
+	private backElements = {} as UIElement;
 
 	private backIsOpen: boolean = false;
 	private animationQueue = Array<ReturnType<typeof setTimeout>>();
 
 	private config = {} as UIConfig;
+	private totalImages: number;
 
 	constructor(
 		zoomConfig: LightboxConfig['zoom'], // Zoom level and
-		animationConfig: LightboxConfig['animation']
+		animationConfig: LightboxConfig['animation'],
+		counterConfig: LightboxConfig['counter'],
+		totalImages: number
 	) {
 		this.background = document.querySelector('.lightbox');
 		this.handleCursorOffset = this.handleCursorOffset.bind(this);
+		this.totalImages = totalImages;
 
 		const display = document.createElement('img');
 		display.classList.add('lightbox__display');
@@ -44,23 +63,27 @@ export class UI {
 
 		this.backDisplay = display;
 
-		const arrows = {
+		const uiElements = {
 			prev: this.createArrow('prev'),
 			next: this.createArrow('next'),
+			counter: this.createCounter(),
 		};
+
+		this.config.animation = { ...defaultAnimations, ...animationConfig };
+		this.config.zoom = { ...defaultZoom, ...zoomConfig };
+		this.config.counter = { ...defaultCounter, ...counterConfig };
 
 		this.background.appendChild(display);
 
-		Object.values(arrows).forEach((arrow) => {
-			this.background.appendChild(arrow);
+		Object.entries(uiElements).forEach(([key, elem]) => {
+			if (!this.config.counter.show && key === 'counter') return;
+			console.log({ key });
+			this.background.appendChild(elem);
 		});
 
 		this.background.addEventListener('click', this.close.bind(this));
 
 		this.display.addEventListener('click', this.handleZoom.bind(this));
-
-		this.config.animation = { ...defaultAnimations, ...animationConfig };
-		this.config.zoom = { ...defaultZoom, ...zoomConfig };
 
 		this.injectCSSClasses();
 	}
@@ -104,8 +127,8 @@ export class UI {
 		return this.backDisplay;
 	}
 
-	get buttons() {
-		return this.backButtons;
+	get elements() {
+		return this.backElements;
 	}
 
 	get isOpen() {
@@ -144,6 +167,19 @@ export class UI {
 			this.unzoom();
 		}
 	}
+
+	private createCounter() {
+		const counter = document.createElement('span');
+		const count = document.createTextNode('22/43');
+
+		counter.classList.add('lightbox__counter');
+		counter.appendChild(count);
+
+		this.elements.counter = counter;
+
+		return counter;
+	}
+
 	private createArrow(dir: 'prev' | 'next'): HTMLButtonElement {
 		const arrowContainer = document.createElement('button');
 
@@ -155,7 +191,7 @@ export class UI {
 		arrowContainer.innerHTML = dir === 'prev' ? leftArrow : rightArrow;
 
 		arrowContainer.classList.add('lightbox__arrow', dir);
-		this.buttons[dir] = arrowContainer;
+		this.elements[dir] = arrowContainer;
 		this.background.appendChild(arrowContainer);
 		return arrowContainer;
 	}
@@ -177,8 +213,8 @@ export class UI {
 	private unzoom() {
 		this.display.classList.remove('zoomed');
 		this.display.style.transform = '';
-		this.buttons.prev.style.visibility = 'visible';
-		this.buttons.next.style.visibility = 'visible';
+		this.elements.prev.style.visibility = 'visible';
+		this.elements.next.style.visibility = 'visible';
 		window.removeEventListener('mousemove', this.handleCursorOffset);
 	}
 	private zoom({ offsetX, offsetY }, level = this.config.zoom.level) {
@@ -186,8 +222,8 @@ export class UI {
 			offsetY * 100
 		}%`;
 		this.display.classList.add('zoomed');
-		this.buttons.prev.style.visibility = 'hidden';
-		this.buttons.next.style.visibility = 'hidden';
+		this.elements.prev.style.visibility = 'hidden';
+		this.elements.next.style.visibility = 'hidden';
 		this.display.style.transform = `scale(${level})`;
 
 		window.addEventListener('mousemove', this.handleCursorOffset);
@@ -215,7 +251,7 @@ export class UI {
 
 		this.blockZoom();
 		this.blockScroll();
-		this.updateSource(element.image, false);
+		this.updateSource(element, false);
 		this.background.classList.add('show');
 		this.isOpen = true;
 	};
@@ -251,7 +287,7 @@ export class UI {
 	}
 
 	public updateSource = (
-		image: ImageObject['image'],
+		element: ImageObject,
 		animate: boolean = true,
 		direction: 'prev' | 'next' = 'next'
 	) => {
@@ -259,9 +295,13 @@ export class UI {
 		[...this.animationQueue].forEach((timeout) => clearTimeout(timeout));
 		this.animationQueue.splice(0);
 
+		this.elements.counter.textContent = `${element.index + 1}/${
+			this.totalImages
+		}`;
+
 		if (!animate) {
-			this.display.setAttribute('src', image.src);
-			this.display.setAttribute('alt', image.alt);
+			this.display.setAttribute('src', element.image.src);
+			this.display.setAttribute('alt', element.image.alt);
 			return;
 		}
 
@@ -271,8 +311,8 @@ export class UI {
 		this.animationQueue.push(
 			setTimeout(
 				() => {
-					this.display.setAttribute('src', image.src);
-					this.display.setAttribute('alt', image.alt);
+					this.display.setAttribute('src', element.image.src);
+					this.display.setAttribute('alt', element.image.alt);
 				},
 				this.config.animation.animate
 					? this.config.animation.duration / 2

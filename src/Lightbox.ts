@@ -1,4 +1,4 @@
-import { UI } from './UI';
+import { UI, UIConfig } from './UI';
 
 export type ImageObject = {
 	parent: HTMLElement;
@@ -12,15 +12,9 @@ export type ImageObject = {
 
 export type LightboxConfig = {
 	targetClass: string;
-	zoom: {
-		level: number;
-	};
-	animation: {
-		animate: boolean;
-		duration: number;
-		next?: string;
-		prev?: string;
-	};
+	animation?: Partial<UIConfig['animation']>;
+	zoom?: Partial<UIConfig['zoom']>;
+	counter?: Partial<UIConfig['counter']>;
 };
 
 export default class Lightbox {
@@ -31,9 +25,14 @@ export default class Lightbox {
 	readonly backConfig: LightboxConfig;
 
 	constructor(config: LightboxConfig) {
-		this.ui = new UI(config.zoom, config.animation);
 		this.images = Array.from(
 			document.querySelectorAll(`.${config.targetClass}`)
+		);
+		this.ui = new UI(
+			config.zoom,
+			config.animation,
+			config.counter,
+			this.images.length
 		);
 		this.backConfig = config;
 	}
@@ -58,7 +57,7 @@ export default class Lightbox {
 
 		if (jumping) direction = direction === 'next' ? 'prev' : 'next';
 
-		this.ui.updateSource(value.image, this.ui.isOpen, direction);
+		this.ui.updateSource(value, this.ui.isOpen, direction);
 		this.backCurrentImage = value;
 	}
 
@@ -138,7 +137,7 @@ export default class Lightbox {
 			);
 		});
 
-		Object.values(this.ui.buttons).forEach((arrow) => {
+		Object.values(this.ui.elements).forEach((arrow) => {
 			arrow.addEventListener('click', (e) => {
 				e.stopPropagation();
 				if (arrow.classList.contains('prev')) this.handlePrev();
