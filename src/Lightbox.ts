@@ -1,3 +1,4 @@
+import { AnimationConfig } from './Animation';
 import { UI, UIConfig } from './UI';
 
 export type ImageObject = {
@@ -12,7 +13,7 @@ export type ImageObject = {
 
 export type LightboxConfig = {
 	targetClass: string;
-	animation?: Partial<UIConfig['animation']>;
+	animation?: Partial<AnimationConfig>;
 	zoom?: Partial<UIConfig['zoom']>;
 	counter?: Partial<UIConfig['counter']>;
 };
@@ -57,7 +58,7 @@ export default class Lightbox {
 
 		if (jumping) direction = direction === 'next' ? 'prev' : 'next';
 
-		this.ui.updateSource(value, this.ui.isOpen, direction);
+		this.ui.updateSource(value, !this.ui.isOpen, direction);
 		this.backCurrentImage = value;
 	}
 

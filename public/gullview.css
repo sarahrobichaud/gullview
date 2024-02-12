@@ -1,5 +1,5 @@
 :root {
-	--gv-foreground-color: #000;
+	--gv-foreground-color: #f4f4f4;
 }
 * {
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -9,7 +9,7 @@
 
 body {
 	color: var(--gv-foreground-color);
-	background: #f4f4f4;
+	background: #000;
 }
 main {
 	max-width: 1000px;

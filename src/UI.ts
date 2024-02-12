@@ -1,3 +1,4 @@
+import AnimationHandler, { AnimationConfig } from './Animation';
 import { ImageObject, LightboxConfig } from './Lightbox';
 
 interface UIElement {
@@ -7,12 +8,7 @@ interface UIElement {
 }
 
 export type UIConfig = {
-	animation: {
-		animate: boolean;
-		duration: number;
-		next: string;
-		prev: string;
-	};
+	animation: AnimationConfig;
 	zoom: {
 		level: number;
 	};
@@ -20,13 +16,6 @@ export type UIConfig = {
 		show: boolean;
 	};
 };
-
-const defaultAnimations = {
-	animate: true,
-	duration: 600,
-	next: 'gv_next',
-	prev: 'gv_prev',
-} satisfies UIConfig['animation'];
 
 const defaultZoom = {
 	level: 1.5,
@@ -37,12 +26,13 @@ const defaultCounter = {
 } satisfies UIConfig['counter'];
 
 export class UI {
+	private animationHandler: AnimationHandler;
+
 	private backBackground: HTMLDivElement;
 	private backDisplay: HTMLImageElement;
 	private backElements = {} as UIElement;
 
 	private backIsOpen: boolean = false;
-	private animationQueue = Array<ReturnType<typeof setTimeout>>();
 
 	private config = {} as UIConfig;
 	private totalImages: number;
@@ -63,13 +53,14 @@ export class UI {
 
 		this.backDisplay = display;
 
+		this.animationHandler = new AnimationHandler(display, animationConfig);
+
 		const uiElements = {
 			prev: this.createArrow('prev'),
 			next: this.createArrow('next'),
 			counter: this.createCounter(),
 		};
 
-		this.config.animation = { ...defaultAnimations, ...animationConfig };
 		this.config.zoom = { ...defaultZoom, ...zoomConfig };
 		this.config.counter = { ...defaultCounter, ...counterConfig };
 
@@ -77,50 +68,12 @@ export class UI {
 
 		Object.entries(uiElements).forEach(([key, elem]) => {
 			if (!this.config.counter.show && key === 'counter') return;
-			console.log({ key });
 			this.background.appendChild(elem);
 		});
 
 		this.background.addEventListener('click', this.close.bind(this));
 
 		this.display.addEventListener('click', this.handleZoom.bind(this));
-
-		this.injectCSSClasses();
-	}
-
-	private injectCSSClasses() {
-		const head = document.head || document.getElementsByTagName('head')[0];
-		const style = document.createElement('style');
-
-		const nextKF = this.config?.animation?.next || defaultAnimations.next;
-		const prevKF = this.config?.animation?.prev || defaultAnimations.prev;
-		const duration =
-			(this.config?.animation?.duration || defaultAnimations.duration) /
-			2;
-
-		const css = `
-			.lightbox__display.slideIn.next {
-    			animation: ${nextKF} ${duration}ms normal forwards;
-				animation-timing-function: ease-out;
-			}
-
-			.lightbox__display.slideOut.next {
-    			animation: ${prevKF} ${duration}ms normal forwards;
-				animation-timing-function: ease-in;
-			}
-
-			.lightbox__display.slideIn.prev {
-    			animation: ${prevKF} ${duration}ms reverse forwards;
-				animation-timing-function: ease-out;
-			}
-
-			.lightbox__display.slideOut.prev {
-				animation-timing-function: ease-in;
-    			animation: ${nextKF} ${duration}ms reverse forwards;
-			}
-			`;
-		head.appendChild(style);
-		style.appendChild(document.createTextNode(css));
 	}
 
 	get display() {
@@ -251,7 +204,6 @@ export class UI {
 
 		this.blockZoom();
 		this.blockScroll();
-		this.updateSource(element, false);
 		this.background.classList.add('show');
 		this.isOpen = true;
 	};
@@ -266,58 +218,23 @@ export class UI {
 		this.background.classList.remove('show');
 	};
 
-	private animateSwap(direction: 'prev' | 'next' = 'next') {
-		const inClasses = ['slideIn', direction];
-		const outClasses = ['slideOut', direction];
-
-		this.display.classList.add(...outClasses);
-
-		this.animationQueue.push(
-			setTimeout(() => {
-				this.display.classList.remove(...outClasses);
-				this.display.classList.add(...inClasses);
-			}, this.config.animation.duration / 2)
-		);
-
-		this.animationQueue.push(
-			setTimeout(() => {
-				this.display.classList.remove(...inClasses);
-			}, this.config.animation.duration)
-		);
-	}
-
 	public updateSource = (
 		element: ImageObject,
-		animate: boolean = true,
+		skipAnimation: boolean = true,
 		direction: 'prev' | 'next' = 'next'
 	) => {
 		// Clear old timeouts
-		[...this.animationQueue].forEach((timeout) => clearTimeout(timeout));
-		this.animationQueue.splice(0);
+		this.animationHandler.clearQueue();
 
 		this.elements.counter.textContent = `${element.index + 1}/${
 			this.totalImages
 		}`;
 
-		if (!animate) {
+		if (skipAnimation || !this.animationHandler.config.enabled) {
 			this.display.setAttribute('src', element.image.src);
 			this.display.setAttribute('alt', element.image.alt);
-			return;
+		} else {
+			this.animationHandler.swapTo(element, direction);
 		}
-
-		if (this.config.animation.animate) this.animateSwap(direction);
-
-		// Update source
-		this.animationQueue.push(
-			setTimeout(
-				() => {
-					this.display.setAttribute('src', element.image.src);
-					this.display.setAttribute('alt', element.image.alt);
-				},
-				this.config.animation.animate
-					? this.config.animation.duration / 2
-					: 0
-			)
-		);
 	};
 }

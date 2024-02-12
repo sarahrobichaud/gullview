@@ -3,11 +3,16 @@ import Lightbox from './Lightbox.ts';
 try {
 	const lightbox = new Lightbox({
 		targetClass: 'lightbox__src',
+		zoom: {
+			level: 3,
+		},
 		animation: {
-			animate: true,
-			duration: 600,
-			prev: 'custom_prev',
+			enabled: true,
+			duration: 500,
 			next: 'custom_next',
+		},
+		counter: {
+			show: true,
 		},
 	});
 	lightbox.init();
