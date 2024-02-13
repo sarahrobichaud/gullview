@@ -4,7 +4,7 @@ import {
   AnimationDisplayConfig,
 } from "./Animation";
 import { UI, UIConfig } from "./UI";
-import ZoomHandler, { ZoomConfig } from "./Zoom";
+import ZoomManager, { ZoomConfig } from "./Zoom";
 
 export type ImageObject = {
   parent: HTMLElement;
@@ -26,17 +26,16 @@ export type LightboxConfig = {
 };
 
 export default class Lightbox {
-  private backImages: Array<ImageObject>;
-  private backCurrentImage: ImageObject;
+  private _images: Array<ImageObject>;
+  private _currentImage: ImageObject;
+  public readonly config: LightboxConfig;
 
-  private ui: UI;
-
-  readonly backConfig: LightboxConfig;
+  public ui: UI;
 
   constructor(config: LightboxConfig, ui: UI, images: Element[]) {
     this.ui = ui;
     this.images = images;
-    this.backConfig = config;
+    this.config = config;
   }
 
   static build(config: LightboxConfig) {
@@ -44,12 +43,14 @@ export default class Lightbox {
       document.querySelectorAll(`.${config.targetClass}`)
     );
 
-    const ui = new UI(config.zoom, config.counter, images.length);
+    const ui = new UI(config.counter, images.length);
 
     ui.animationHandlers.set(
       "display",
       new DisplayAnimationHandler(ui.display.element, config.animation?.display)
     );
+
+    ui.zoomManager = new ZoomManager(ui, config.zoom);
 
     return new Lightbox(config, ui, images);
   }
@@ -58,12 +59,8 @@ export default class Lightbox {
     return this.ui.animationHandlers;
   }
 
-  get config(): LightboxConfig {
-    return this.backConfig;
-  }
-
   get currentImage(): ImageObject {
-    return this.backCurrentImage;
+    return this._currentImage;
   }
 
   set currentImage(value: ImageObject) {
@@ -79,11 +76,11 @@ export default class Lightbox {
     if (jumping) direction = direction === "next" ? "prev" : "next";
 
     this.ui.updateSource(value, !this.ui.isOpen, direction);
-    this.backCurrentImage = value;
+    this._currentImage = value;
   }
 
   get images(): ImageObject[] {
-    return this.backImages;
+    return this._images;
   }
 
   set images(value: unknown[]) {
@@ -115,7 +112,7 @@ export default class Lightbox {
       };
     });
 
-    this.backImages = imageObjects;
+    this._images = imageObjects;
   }
 
   private handleOpen(e: MouseEvent, element: ImageObject) {

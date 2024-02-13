@@ -1,6 +1,6 @@
 import { AnimationConfig, DisplayAnimationHandler } from "./Animation";
 import { ImageObject, LightboxConfig } from "./Lightbox";
-import ZoomHandler, { ZoomConfig } from "./Zoom";
+import ZoomManager, { ZoomConfig } from "./Zoom";
 import { allowScroll, blockScroll } from "./utils/scroll";
 
 export type GVElement<TElemType extends HTMLElement, HandlerType> = {
@@ -31,7 +31,7 @@ type AnimationHandler = DisplayAnimationHandler;
 
 export class UI {
   private _animationHandlers: Map<string, AnimationHandler>;
-  private zoomHandler: ZoomHandler;
+  private _zoomManager: ZoomManager;
 
   private backBackground: HTMLDivElement;
   private _display: HTMLImageElement;
@@ -42,11 +42,7 @@ export class UI {
   private config = {} as UIConfig;
   private totalImages: number;
 
-  constructor(
-    zoomConfig: LightboxConfig["zoom"], // Zoom level and
-    counterConfig: LightboxConfig["counter"],
-    totalImages: number
-  ) {
+  constructor(counterConfig: LightboxConfig["counter"], totalImages: number) {
     this._animationHandlers = new Map();
     this.background = document.querySelector(".lightbox");
     this.totalImages = totalImages;
@@ -56,8 +52,6 @@ export class UI {
     display.setAttribute("alt", "lightbox display");
 
     this._display = display;
-
-    this.zoomHandler = new ZoomHandler(zoomConfig, this);
 
     const uiElements = {
       prev: this.createArrow("prev"),
@@ -81,14 +75,21 @@ export class UI {
     });
 
     this.background.addEventListener("click", this.close.bind(this));
-
-    this.display.element.addEventListener("click", this.zoomHandler.listener);
   }
 
   /* Handlers */
 
   get animationHandlers() {
     return this._animationHandlers;
+  }
+
+  get zoomManager(): ZoomManager {
+    return this._zoomManager;
+  }
+
+  set zoomManager(value: ZoomManager) {
+    this.display.element.addEventListener("click", value.listener);
+    this._zoomManager = value;
   }
 
   get display(): UIElement["display"] {
@@ -155,7 +156,7 @@ export class UI {
     if (!(target instanceof HTMLImageElement)) return;
 
     blockScroll();
-    if (this.zoomHandler.config.blockNative) this.zoomHandler.blockNative();
+    if (this.zoomManager.config.blockNative) this.zoomManager.blockNative();
     this.background.classList.add("show");
     this.isOpen = true;
   };
@@ -163,8 +164,8 @@ export class UI {
   public close = (e: MouseEvent) => {
     if (!(e.target instanceof HTMLDivElement)) return;
 
-    this.zoomHandler.unzoom();
-    this.zoomHandler.allowNative();
+    this.zoomManager.unzoom();
+    this.zoomManager.allowNative();
     allowScroll();
     this.isOpen = false;
     this.background.classList.remove("show");

@@ -18,12 +18,11 @@ export default class ZoomHandler {
   public config = {} as ZoomConfig;
   private ui: UI;
 
-  constructor(config: LightboxConfig["zoom"], parent: UI) {
+  constructor(ui: UI, config: LightboxConfig["zoom"]) {
     this.config = { ...defaultZoom, ...config };
-    this.ui = parent;
+    this.ui = ui;
 
     this.handleCursorOffset = this.handleCursorOffset.bind(this);
-    console.log(this.config);
   }
 
   private blockZoomHandler(e: WheelEvent) {
