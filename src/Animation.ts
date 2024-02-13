@@ -35,7 +35,7 @@ export class DisplayAnimationHandler {
     const fullDuration = this.config.duration;
     const halfDuration = fullDuration / 2;
 
-    this.element.classList.add(...outClasses);
+    this.element.classList.add(...outClasses, "moving");
     this.animationQueue.push(
       setTimeout(() => {
         this.element.classList.remove(...outClasses);
@@ -45,7 +45,7 @@ export class DisplayAnimationHandler {
 
     this.animationQueue.push(
       setTimeout(() => {
-        this.element.classList.remove(...inClasses);
+        this.element.classList.remove(...inClasses, "moving");
       }, fullDuration)
     );
 

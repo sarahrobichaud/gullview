@@ -155,6 +155,7 @@ export class UI {
   public close = (e: MouseEvent) => {
     if (!(e.target instanceof HTMLDivElement)) return;
 
+    if (e.bubbles) return;
     this.zoomManager.unzoom();
     this.zoomManager.allowNative();
     allowScroll();

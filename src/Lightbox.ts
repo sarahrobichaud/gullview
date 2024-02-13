@@ -16,12 +16,9 @@ export default class Lightbox {
     this.ui = ui;
     this.images = images;
     this.config = config;
-
-    this.handleNext = this.handleNext.bind(this);
-    this.handlePrev = this.handlePrev.bind(this);
   }
 
-  static build(config: LightboxConfig) {
+  public static build(config: LightboxConfig) {
     const images = Array.from(
       document.querySelectorAll(`.${config.targetClass}`)
     );
@@ -125,7 +122,7 @@ export default class Lightbox {
     this.currentImage = prev;
   }
 
-  init = () => {
+  public init = () => {
     this.images.forEach((element) => {
       element.parent.addEventListener("click", (e) =>
         this.handleOpen(e, element)
@@ -137,15 +134,21 @@ export default class Lightbox {
 
       switch (key) {
         case "prev":
-          element.addEventListener("click", this.handlePrev);
+          element.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this.handlePrev();
+          });
           break;
         case "next":
-          element.addEventListener("click", this.handleNext);
+          element.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this.handleNext();
+          });
           break;
       }
 
       // element.addEventListener("click", (e) => {
-      //   e.stopPropagation();
+      //   e.stopPropagtion();
       //   if (element.classList.contains("prev")) this.handlePrev();
       //   if (element.classList.contains("next")) this.handleNext();
       // });
