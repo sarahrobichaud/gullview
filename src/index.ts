@@ -1,7 +1,7 @@
 import Lightbox from "./Lightbox.ts";
 
 try {
-  const lightbox = new Lightbox({
+  const lightbox = Lightbox.build({
     targetClass: "lightbox__src",
     zoom: {
       enabled: true,
@@ -9,8 +9,10 @@ try {
       blockNative: true,
     },
     animation: {
-      enabled: true,
-      duration: 500,
+      display: {
+        enabled: true,
+        duration: 300,
+      },
     },
     counter: {
       show: true,
@@ -18,5 +20,6 @@ try {
   });
   lightbox.init();
 } catch (e) {
+  console.log(e);
   console.error(`Error: ${e.message}`);
 }

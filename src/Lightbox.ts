@@ -1,4 +1,8 @@
-import AnimationHandler, { AnimationConfig } from "./Animation";
+import {
+  AnimationConfig,
+  DisplayAnimationHandler,
+  AnimationDisplayConfig,
+} from "./Animation";
 import { UI, UIConfig } from "./UI";
 import ZoomHandler, { ZoomConfig } from "./Zoom";
 
@@ -14,7 +18,9 @@ export type ImageObject = {
 
 export type LightboxConfig = {
   targetClass: string;
-  animation?: Partial<AnimationConfig>;
+  animation?: {
+    display?: Partial<AnimationDisplayConfig>;
+  };
   zoom?: Partial<ZoomConfig>;
   counter?: Partial<UIConfig["counter"]>;
 };
@@ -27,18 +33,29 @@ export default class Lightbox {
 
   readonly backConfig: LightboxConfig;
 
-  constructor(config: LightboxConfig) {
-    this.images = Array.from(
+  constructor(config: LightboxConfig, ui: UI, images: Element[]) {
+    this.ui = ui;
+    this.images = images;
+    this.backConfig = config;
+  }
+
+  static build(config: LightboxConfig) {
+    const images = Array.from(
       document.querySelectorAll(`.${config.targetClass}`)
     );
-    this.ui = new UI(
-      config.zoom,
-      config.animation,
-      config.counter,
-      this.images.length
+
+    const ui = new UI(config.zoom, config.counter, images.length);
+
+    ui.animationHandlers.set(
+      "display",
+      new DisplayAnimationHandler(ui.display.element, config.animation?.display)
     );
 
-    this.backConfig = config;
+    return new Lightbox(config, ui, images);
+  }
+
+  get animationHandlers() {
+    return this.ui.animationHandlers;
   }
 
   get config(): LightboxConfig {

@@ -31,29 +31,29 @@ export default class ZoomHandler {
   }
 
   private zoom({ offsetX, offsetY }, level = this.config.level) {
-    this.ui.display.style.transformOrigin = `${offsetX * 100}% ${
+    this.ui.display.element.style.transformOrigin = `${offsetX * 100}% ${
       offsetY * 100
     }%`;
-    this.ui.display.classList.add("zoomed");
+    this.ui.display.element.classList.add("zoomed");
     this.ui.elements.prev.style.visibility = "hidden";
     this.ui.elements.next.style.visibility = "hidden";
-    this.ui.display.style.transform = `scale(${level})`;
+    this.ui.display.element.style.transform = `scale(${level})`;
 
     window.addEventListener("mousemove", this.handleCursorOffset);
   }
 
   private handleCursorOffset(e) {
     const { clientX, clientY } = e;
-    const bounds = this.ui.display.getBoundingClientRect();
+    const bounds = this.ui.display.element.getBoundingClientRect();
     const offsets = offsetPos(clientX, clientY, bounds);
-    this.ui.display.style.transformOrigin = `${offsets.offsetX * 100}% ${
-      offsets.offsetY * 100
-    }%`;
+    this.ui.display.element.style.transformOrigin = `${
+      offsets.offsetX * 100
+    }% ${offsets.offsetY * 100}%`;
   }
 
   public unzoom = () => {
-    this.ui.display.classList.remove("zoomed");
-    this.ui.display.style.transform = "";
+    this.ui.display.element.classList.remove("zoomed");
+    this.ui.display.element.style.transform = "";
     this.ui.elements.prev.style.visibility = "visible";
     this.ui.elements.next.style.visibility = "visible";
     window.removeEventListener("mousemove", this.handleCursorOffset);
@@ -73,7 +73,7 @@ export default class ZoomHandler {
   public listener = ({ clientX, clientY, target }) => {
     const bounds = target.getBoundingClientRect();
     const offsets = offsetPos(clientX, clientY, bounds);
-    if (this.ui.display.style.transform === "") {
+    if (this.ui.display.element.style.transform === "") {
       this.zoom(offsets);
     } else {
       this.unzoom();

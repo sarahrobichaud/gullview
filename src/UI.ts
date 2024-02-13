@@ -1,171 +1,192 @@
-import AnimationHandler, { AnimationConfig } from './Animation';
-import { ImageObject, LightboxConfig } from './Lightbox';
-import ZoomHandler, { ZoomConfig } from './Zoom';
-import { allowScroll, blockScroll } from './utils/scroll';
+import { AnimationConfig, DisplayAnimationHandler } from "./Animation";
+import { ImageObject, LightboxConfig } from "./Lightbox";
+import ZoomHandler, { ZoomConfig } from "./Zoom";
+import { allowScroll, blockScroll } from "./utils/scroll";
+
+export type GVElement<TElemType extends HTMLElement, HandlerType> = {
+  animation: HandlerType | null;
+  element: TElemType;
+};
 
 interface UIElement {
-	prev: HTMLButtonElement;
-	next: HTMLButtonElement;
-	counter: HTMLSpanElement;
+  prev: HTMLButtonElement;
+  next: HTMLButtonElement;
+  counter: HTMLSpanElement;
+  display: GVElement<HTMLImageElement, DisplayAnimationHandler>;
 }
 
 export type UIConfig = {
-	animation: AnimationConfig;
-	zoom: ZoomConfig;
-	counter: {
-		show: boolean;
-	};
+  animation: AnimationConfig;
+  zoom: ZoomConfig;
+  counter: {
+    show: boolean;
+  };
 };
 
 const defaultCounter = {
-	show: false,
-} satisfies UIConfig['counter'];
+  show: false,
+} satisfies UIConfig["counter"];
+
+type AnimationHandler = DisplayAnimationHandler;
 
 export class UI {
-	private animationHandler: AnimationHandler;
-	private zoomHandler: ZoomHandler;
+  private _animationHandlers: Map<string, AnimationHandler>;
+  private zoomHandler: ZoomHandler;
 
-	private backBackground: HTMLDivElement;
-	private backDisplay: HTMLImageElement;
-	private backElements = {} as UIElement;
+  private backBackground: HTMLDivElement;
+  private _display: HTMLImageElement;
+  private backElements = {} as UIElement;
 
-	private backIsOpen: boolean = false;
+  private backIsOpen: boolean = false;
 
-	private config = {} as UIConfig;
-	private totalImages: number;
+  private config = {} as UIConfig;
+  private totalImages: number;
 
-	constructor(
-		zoomConfig: LightboxConfig['zoom'], // Zoom level and
-		animationConfig: LightboxConfig['animation'],
-		counterConfig: LightboxConfig['counter'],
-		totalImages: number
-	) {
-		this.background = document.querySelector('.lightbox');
-		this.totalImages = totalImages;
+  constructor(
+    zoomConfig: LightboxConfig["zoom"], // Zoom level and
+    counterConfig: LightboxConfig["counter"],
+    totalImages: number
+  ) {
+    this._animationHandlers = new Map();
+    this.background = document.querySelector(".lightbox");
+    this.totalImages = totalImages;
 
-		const display = document.createElement('img');
-		display.classList.add('lightbox__display');
-		display.setAttribute('alt', 'lightbox display');
+    const display = document.createElement("img");
+    display.classList.add("lightbox__display");
+    display.setAttribute("alt", "lightbox display");
 
-		this.backDisplay = display;
+    this._display = display;
 
-		this.zoomHandler = new ZoomHandler(zoomConfig, this);
-		this.animationHandler = new AnimationHandler(display, animationConfig);
+    this.zoomHandler = new ZoomHandler(zoomConfig, this);
 
-		const uiElements = {
-			prev: this.createArrow('prev'),
-			next: this.createArrow('next'),
-			counter: this.createCounter(),
-		};
+    const uiElements = {
+      prev: this.createArrow("prev"),
+      next: this.createArrow("next"),
+      counter: this.createCounter(),
+      display: this.display,
+    } satisfies UIElement;
 
-		this.config.counter = { ...defaultCounter, ...counterConfig };
+    this.config.counter = { ...defaultCounter, ...counterConfig };
 
-		this.background.appendChild(display);
+    this.background.appendChild(display);
 
-		Object.entries(uiElements).forEach(([key, elem]) => {
-			if (!this.config.counter.show && key === 'counter') return;
-			this.background.appendChild(elem);
-		});
+    Object.entries(uiElements).forEach(([key, uiElem]) => {
+      if (!this.config.counter.show && key === "counter") return;
 
-		this.background.addEventListener('click', this.close.bind(this));
+      if (!("animation" in uiElem)) {
+        return this.background.appendChild(uiElem);
+      } else {
+        return this.background.appendChild(uiElem.element);
+      }
+    });
 
-		this.display.addEventListener('click', this.zoomHandler.listener);
-	}
+    this.background.addEventListener("click", this.close.bind(this));
 
-	get display() {
-		return this.backDisplay;
-	}
+    this.display.element.addEventListener("click", this.zoomHandler.listener);
+  }
 
-	get elements() {
-		return this.backElements;
-	}
+  /* Handlers */
 
-	get isOpen() {
-		return this.backIsOpen;
-	}
+  get animationHandlers() {
+    return this._animationHandlers;
+  }
 
-	private set isOpen(value: boolean) {
-		this.backIsOpen = value;
-	}
+  get display(): UIElement["display"] {
+    return {
+      element: this._display,
+      animation: this.animationHandlers.get("display") || null,
+    };
+  }
 
-	get background(): HTMLDivElement {
-		return this.backBackground;
-	}
+  get elements() {
+    return this.backElements;
+  }
 
-	set background(value: unknown) {
-		if (!value)
-			throw new Error('No elements with a class of "lightbox" found');
+  get isOpen() {
+    return this.backIsOpen;
+  }
 
-		if (!(value instanceof HTMLDivElement))
-			throw new Error('Lightbox must be a div');
+  private set isOpen(value: boolean) {
+    this.backIsOpen = value;
+  }
 
-		this.backBackground = value;
-	}
+  get background(): HTMLDivElement {
+    return this.backBackground;
+  }
 
-	private createCounter() {
-		const counter = document.createElement('span');
-		const count = document.createTextNode('22/43');
+  set background(value: unknown) {
+    if (!value) throw new Error('No elements with a class of "lightbox" found');
 
-		counter.classList.add('lightbox__counter');
-		counter.appendChild(count);
+    if (!(value instanceof HTMLDivElement))
+      throw new Error("Lightbox must be a div");
 
-		this.elements.counter = counter;
+    this.backBackground = value;
+  }
 
-		return counter;
-	}
+  private createCounter() {
+    const counter = document.createElement("span");
+    const count = document.createTextNode("22/43");
 
-	private createArrow(dir: 'prev' | 'next'): HTMLButtonElement {
-		const arrowContainer = document.createElement('button');
+    counter.classList.add("lightbox__counter");
+    counter.appendChild(count);
 
-		const leftArrow =
-			'<svg xlmns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>';
-		const rightArrow =
-			'<svg xlmns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+    this.elements.counter = counter;
 
-		arrowContainer.innerHTML = dir === 'prev' ? leftArrow : rightArrow;
+    return counter;
+  }
 
-		arrowContainer.classList.add('lightbox__arrow', dir);
-		this.elements[dir] = arrowContainer;
-		this.background.appendChild(arrowContainer);
-		return arrowContainer;
-	}
+  private createArrow(dir: "prev" | "next"): HTMLButtonElement {
+    const arrowContainer = document.createElement("button");
 
-	public open = ({ target }: MouseEvent, element: ImageObject) => {
-		if (!(target instanceof HTMLImageElement)) return;
+    const leftArrow =
+      '<svg xlmns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>';
+    const rightArrow =
+      '<svg xlmns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
 
-		blockScroll();
-		if (this.zoomHandler.config.blockNative) this.zoomHandler.blockNative();
-		this.background.classList.add('show');
-		this.isOpen = true;
-	};
+    arrowContainer.innerHTML = dir === "prev" ? leftArrow : rightArrow;
 
-	public close = (e: MouseEvent) => {
-		if (!(e.target instanceof HTMLDivElement)) return;
+    arrowContainer.classList.add("lightbox__arrow", dir);
+    this.elements[dir] = arrowContainer;
+    this.background.appendChild(arrowContainer);
+    return arrowContainer;
+  }
 
-		this.zoomHandler.unzoom();
-		this.zoomHandler.allowNative();
-		allowScroll();
-		this.isOpen = false;
-		this.background.classList.remove('show');
-	};
+  public open = ({ target }: MouseEvent, element: ImageObject) => {
+    if (!(target instanceof HTMLImageElement)) return;
 
-	public updateSource = (
-		element: ImageObject,
-		skipAnimation: boolean = true,
-		direction: 'prev' | 'next' = 'next'
-	) => {
-		// Clear old timeouts
-		this.animationHandler.clearQueue();
+    blockScroll();
+    if (this.zoomHandler.config.blockNative) this.zoomHandler.blockNative();
+    this.background.classList.add("show");
+    this.isOpen = true;
+  };
 
-		this.elements.counter.textContent = `${element.index + 1}/${
-			this.totalImages
-		}`;
+  public close = (e: MouseEvent) => {
+    if (!(e.target instanceof HTMLDivElement)) return;
 
-		if (skipAnimation || !this.animationHandler.config.enabled) {
-			this.display.setAttribute('src', element.image.src);
-			this.display.setAttribute('alt', element.image.alt);
-		} else {
-			this.animationHandler.swapTo(element, direction);
-		}
-	};
+    this.zoomHandler.unzoom();
+    this.zoomHandler.allowNative();
+    allowScroll();
+    this.isOpen = false;
+    this.background.classList.remove("show");
+  };
+
+  public updateSource = (
+    element: ImageObject,
+    skipAnimation: boolean = true,
+    direction: "prev" | "next" = "next"
+  ) => {
+    // Clear old timeouts
+    this.display.animation?.clearQueue();
+
+    this.elements.counter.textContent = `${element.index + 1}/${
+      this.totalImages
+    }`;
+
+    if (skipAnimation || !this.display.animation?.config.enabled) {
+      this.display.element.setAttribute("src", element.image.src);
+      this.display.element.setAttribute("alt", element.image.alt);
+    } else {
+      this.display.animation.swapTo(element, direction);
+    }
+  };
 }
