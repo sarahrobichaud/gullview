@@ -1,33 +1,13 @@
-import { AnimationConfig, DisplayAnimationHandler } from "./Animation";
-import { ImageObject, LightboxConfig } from "./Lightbox";
+import { DisplayAnimationHandler } from "./Animation";
 import ZoomManager, { ZoomConfig } from "./Zoom";
+import { AnimationHandler } from "./types/Animation";
+import { LightboxConfig, UIConfig } from "./types/Config";
+import { ImageObject, UIElement } from "./types/Gullview";
 import { allowScroll, blockScroll } from "./utils/scroll";
-
-export type GVElement<TElemType extends HTMLElement, HandlerType> = {
-  animation: HandlerType | null;
-  element: TElemType;
-};
-
-interface UIElement {
-  prev: HTMLButtonElement;
-  next: HTMLButtonElement;
-  counter: HTMLSpanElement;
-  display: GVElement<HTMLImageElement, DisplayAnimationHandler>;
-}
-
-export type UIConfig = {
-  animation: AnimationConfig;
-  zoom: ZoomConfig;
-  counter: {
-    show: boolean;
-  };
-};
 
 const defaultCounter = {
   show: false,
 } satisfies UIConfig["counter"];
-
-type AnimationHandler = DisplayAnimationHandler;
 
 export class UI {
   private _animationHandlers: Map<string, AnimationHandler>;
@@ -35,7 +15,7 @@ export class UI {
 
   private backBackground: HTMLDivElement;
   private _display: HTMLImageElement;
-  private backElements = {} as UIElement;
+  private _elements = {} as UIElement;
 
   private backIsOpen: boolean = false;
 
@@ -53,7 +33,7 @@ export class UI {
 
     this._display = display;
 
-    const uiElements = {
+    this._elements = {
       prev: this.createArrow("prev"),
       next: this.createArrow("next"),
       counter: this.createCounter(),
@@ -64,7 +44,7 @@ export class UI {
 
     this.background.appendChild(display);
 
-    Object.entries(uiElements).forEach(([key, uiElem]) => {
+    this.elementList.forEach(([key, uiElem]) => {
       if (!this.config.counter.show && key === "counter") return;
 
       if (!("animation" in uiElem)) {
@@ -95,12 +75,23 @@ export class UI {
   get display(): UIElement["display"] {
     return {
       element: this._display,
+      kind: "display",
       animation: this.animationHandlers.get("display") || null,
     };
   }
 
+  /**
+   * Returns an object of UI elements
+   */
   get elements() {
-    return this.backElements;
+    return this._elements;
+  }
+
+  /**
+   * Returns an array of key-value pairs of the UI elements
+   */
+  get elementList() {
+    return Object.entries(this.elements);
   }
 
   get isOpen() {

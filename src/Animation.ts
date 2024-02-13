@@ -1,16 +1,6 @@
-import { ImageObject, LightboxConfig } from "./Lightbox";
-import { UIConfig } from "./UI";
-
-export type AnimationDisplayConfig = {
-  enabled: boolean;
-  duration: number;
-  next: string;
-  prev: string;
-};
-
-export type AnimationConfig = {
-  display: AnimationDisplayConfig;
-};
+import { AnimationDisplayConfig } from "./types/Animation";
+import { UIConfig } from "./types/Config";
+import { ImageObject } from "./types/Gullview";
 
 const displayDefaults = {
   enabled: false,
@@ -104,3 +94,4 @@ export class DisplayAnimationHandler {
     style.appendChild(document.createTextNode(css));
   }
 }
+export { AnimationDisplayConfig };

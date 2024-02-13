@@ -1,29 +1,9 @@
-import {
-  AnimationConfig,
-  DisplayAnimationHandler,
-  AnimationDisplayConfig,
-} from "./Animation";
-import { UI, UIConfig } from "./UI";
+import { DisplayAnimationHandler, AnimationDisplayConfig } from "./Animation";
+import { UI } from "./UI";
 import ZoomManager, { ZoomConfig } from "./Zoom";
 
-export type ImageObject = {
-  parent: HTMLElement;
-  index: number;
-  image: {
-    alt: string;
-    src: string;
-    elem: HTMLImageElement;
-  };
-};
-
-export type LightboxConfig = {
-  targetClass: string;
-  animation?: {
-    display?: Partial<AnimationDisplayConfig>;
-  };
-  zoom?: Partial<ZoomConfig>;
-  counter?: Partial<UIConfig["counter"]>;
-};
+import type { LightboxConfig } from "./types/Config";
+import { isGVDisplayElement, type ImageObject } from "./types/Gullview";
 
 export default class Lightbox {
   private _images: Array<ImageObject>;
@@ -36,6 +16,9 @@ export default class Lightbox {
     this.ui = ui;
     this.images = images;
     this.config = config;
+
+    this.handleNext = this.handleNext.bind(this);
+    this.handlePrev = this.handlePrev.bind(this);
   }
 
   static build(config: LightboxConfig) {
@@ -149,12 +132,23 @@ export default class Lightbox {
       );
     });
 
-    Object.values(this.ui.elements).forEach((arrow) => {
-      arrow.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (arrow.classList.contains("prev")) this.handlePrev();
-        if (arrow.classList.contains("next")) this.handleNext();
-      });
+    this.ui.elementList.forEach(([key, element]) => {
+      if (isGVDisplayElement(element)) return;
+
+      switch (key) {
+        case "prev":
+          element.addEventListener("click", this.handlePrev);
+          break;
+        case "next":
+          element.addEventListener("click", this.handleNext);
+          break;
+      }
+
+      // element.addEventListener("click", (e) => {
+      //   e.stopPropagation();
+      //   if (element.classList.contains("prev")) this.handlePrev();
+      //   if (element.classList.contains("next")) this.handleNext();
+      // });
     });
   };
 }

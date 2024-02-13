@@ -1,5 +1,5 @@
-import { LightboxConfig } from "./Lightbox";
 import { UI } from "./UI";
+import { LightboxConfig } from "./types/Config";
 import { offsetPos } from "./utils/position";
 
 export type ZoomConfig = {
