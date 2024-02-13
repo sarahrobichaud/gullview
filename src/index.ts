@@ -1,21 +1,22 @@
-import Lightbox from './Lightbox.ts';
+import Lightbox from "./Lightbox.ts";
 
 try {
-	const lightbox = new Lightbox({
-		targetClass: 'lightbox__src',
-		zoom: {
-			level: 3,
-		},
-		animation: {
-			enabled: true,
-			duration: 500,
-			next: 'custom_next',
-		},
-		counter: {
-			show: true,
-		},
-	});
-	lightbox.init();
+  const lightbox = new Lightbox({
+    targetClass: "lightbox__src",
+    zoom: {
+      enabled: true,
+      level: 3,
+      blockNative: true,
+    },
+    animation: {
+      enabled: true,
+      duration: 500,
+    },
+    counter: {
+      show: true,
+    },
+  });
+  lightbox.init();
 } catch (e) {
-	console.error(`Error: ${e.message}`);
+  console.error(`Error: ${e.message}`);
 }

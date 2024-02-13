@@ -1,149 +1,146 @@
-import { AnimationConfig } from './Animation';
-import { UI, UIConfig } from './UI';
+import AnimationHandler, { AnimationConfig } from "./Animation";
+import { UI, UIConfig } from "./UI";
+import ZoomHandler, { ZoomConfig } from "./Zoom";
 
 export type ImageObject = {
-	parent: HTMLElement;
-	index: number;
-	image: {
-		alt: string;
-		src: string;
-		elem: HTMLImageElement;
-	};
+  parent: HTMLElement;
+  index: number;
+  image: {
+    alt: string;
+    src: string;
+    elem: HTMLImageElement;
+  };
 };
 
 export type LightboxConfig = {
-	targetClass: string;
-	animation?: Partial<AnimationConfig>;
-	zoom?: Partial<UIConfig['zoom']>;
-	counter?: Partial<UIConfig['counter']>;
+  targetClass: string;
+  animation?: Partial<AnimationConfig>;
+  zoom?: Partial<ZoomConfig>;
+  counter?: Partial<UIConfig["counter"]>;
 };
 
 export default class Lightbox {
-	private backImages: Array<ImageObject>;
-	private backCurrentImage: ImageObject;
-	private readonly ui: UI;
+  private backImages: Array<ImageObject>;
+  private backCurrentImage: ImageObject;
 
-	readonly backConfig: LightboxConfig;
+  private ui: UI;
 
-	constructor(config: LightboxConfig) {
-		this.images = Array.from(
-			document.querySelectorAll(`.${config.targetClass}`)
-		);
-		this.ui = new UI(
-			config.zoom,
-			config.animation,
-			config.counter,
-			this.images.length
-		);
-		this.backConfig = config;
-	}
+  readonly backConfig: LightboxConfig;
 
-	get config(): LightboxConfig {
-		return this.backConfig;
-	}
+  constructor(config: LightboxConfig) {
+    this.images = Array.from(
+      document.querySelectorAll(`.${config.targetClass}`)
+    );
+    this.ui = new UI(
+      config.zoom,
+      config.animation,
+      config.counter,
+      this.images.length
+    );
 
-	get currentImage(): ImageObject {
-		return this.backCurrentImage;
-	}
+    this.backConfig = config;
+  }
 
-	set currentImage(value: ImageObject) {
-		const jumping =
-			(this.currentImage?.index === this.images.length - 1 &&
-				value.index === 0) ||
-			(this.currentImage?.index === 0 &&
-				value.index === this.images.length - 1);
+  get config(): LightboxConfig {
+    return this.backConfig;
+  }
 
-		let direction: 'next' | 'prev' =
-			value.index > this.currentImage?.index ? 'next' : 'prev';
+  get currentImage(): ImageObject {
+    return this.backCurrentImage;
+  }
 
-		if (jumping) direction = direction === 'next' ? 'prev' : 'next';
+  set currentImage(value: ImageObject) {
+    const jumping =
+      (this.currentImage?.index === this.images.length - 1 &&
+        value.index === 0) ||
+      (this.currentImage?.index === 0 &&
+        value.index === this.images.length - 1);
 
-		this.ui.updateSource(value, !this.ui.isOpen, direction);
-		this.backCurrentImage = value;
-	}
+    let direction: "next" | "prev" =
+      value.index > this.currentImage?.index ? "next" : "prev";
 
-	get images(): ImageObject[] {
-		return this.backImages;
-	}
+    if (jumping) direction = direction === "next" ? "prev" : "next";
 
-	set images(value: unknown[]) {
-		const imageObjects = value.map((parent, idx) => {
-			if (!(parent instanceof HTMLElement))
-				throw new Error(
-					'Items targeted by lightbox must be HTMLImageElements'
-				);
+    this.ui.updateSource(value, !this.ui.isOpen, direction);
+    this.backCurrentImage = value;
+  }
 
-			const elem = parent.querySelector('img');
+  get images(): ImageObject[] {
+    return this.backImages;
+  }
 
-			if (!(elem instanceof HTMLImageElement))
-				throw new Error(
-					'Items targeted by lightbox must contain an img element.'
-				);
+  set images(value: unknown[]) {
+    const imageObjects = value.map((parent, idx) => {
+      if (!(parent instanceof HTMLElement))
+        throw new Error("Items targeted by lightbox must be HTMLImageElements");
 
-			const [src, alt] = [
-				elem.getAttribute('src'),
-				elem.getAttribute('alt'),
-			];
+      const elem = parent.querySelector("img");
 
-			if (!src)
-				throw new Error('Images must have a src and alt attribute.');
+      if (!(elem instanceof HTMLImageElement))
+        throw new Error(
+          "Items targeted by lightbox must contain an img element."
+        );
 
-			if (!alt) throw new Error('Images must have an alt attribute.');
+      const [src, alt] = [elem.getAttribute("src"), elem.getAttribute("alt")];
 
-			return {
-				parent,
-				index: idx,
-				image: {
-					src,
-					alt,
-					elem,
-				},
-			};
-		});
+      if (!src) throw new Error("Images must have a src and alt attribute.");
 
-		this.backImages = imageObjects;
-	}
+      if (!alt) throw new Error("Images must have an alt attribute.");
 
-	private handleOpen(e: MouseEvent, element: ImageObject) {
-		this.currentImage = element;
-		this.ui.open(e, element);
-	}
+      return {
+        parent,
+        index: idx,
+        image: {
+          src,
+          alt,
+          elem,
+        },
+      };
+    });
 
-	private handleNext() {
-		if (!this.currentImage) return;
+    this.backImages = imageObjects;
+  }
 
-		const next =
-			this.currentImage.index !== this.images.length - 1
-				? this.images[this.currentImage.index + 1]
-				: this.images[0];
+  private handleOpen(e: MouseEvent, element: ImageObject) {
+    this.currentImage = element;
+    this.ui.open(e, element);
+  }
 
-		this.currentImage = next;
-	}
+  private handleNext() {
+    if (!this.currentImage) return;
 
-	private handlePrev() {
-		if (!this.currentImage) return;
+    const next =
+      this.currentImage.index !== this.images.length - 1
+        ? this.images[this.currentImage.index + 1]
+        : this.images[0];
 
-		const prev =
-			this.currentImage.index !== 0
-				? this.images[this.currentImage.index - 1]
-				: this.images[this.images.length - 1];
+    this.currentImage = next;
+  }
 
-		this.currentImage = prev;
-	}
+  private handlePrev() {
+    if (!this.currentImage) return;
 
-	init = () => {
-		this.images.forEach((element) => {
-			element.parent.addEventListener('click', (e) =>
-				this.handleOpen(e, element)
-			);
-		});
+    const prev =
+      this.currentImage.index !== 0
+        ? this.images[this.currentImage.index - 1]
+        : this.images[this.images.length - 1];
 
-		Object.values(this.ui.elements).forEach((arrow) => {
-			arrow.addEventListener('click', (e) => {
-				e.stopPropagation();
-				if (arrow.classList.contains('prev')) this.handlePrev();
-				if (arrow.classList.contains('next')) this.handleNext();
-			});
-		});
-	};
+    this.currentImage = prev;
+  }
+
+  init = () => {
+    this.images.forEach((element) => {
+      element.parent.addEventListener("click", (e) =>
+        this.handleOpen(e, element)
+      );
+    });
+
+    Object.values(this.ui.elements).forEach((arrow) => {
+      arrow.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (arrow.classList.contains("prev")) this.handlePrev();
+        if (arrow.classList.contains("next")) this.handleNext();
+      });
+    });
+  };
 }

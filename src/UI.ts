@@ -1,5 +1,7 @@
 import AnimationHandler, { AnimationConfig } from './Animation';
 import { ImageObject, LightboxConfig } from './Lightbox';
+import ZoomHandler, { ZoomConfig } from './Zoom';
+import { allowScroll, blockScroll } from './utils/scroll';
 
 interface UIElement {
 	prev: HTMLButtonElement;
@@ -9,17 +11,11 @@ interface UIElement {
 
 export type UIConfig = {
 	animation: AnimationConfig;
-	zoom: {
-		level: number;
-	};
+	zoom: ZoomConfig;
 	counter: {
 		show: boolean;
 	};
 };
-
-const defaultZoom = {
-	level: 1.5,
-} satisfies UIConfig['zoom'];
 
 const defaultCounter = {
 	show: false,
@@ -27,6 +23,7 @@ const defaultCounter = {
 
 export class UI {
 	private animationHandler: AnimationHandler;
+	private zoomHandler: ZoomHandler;
 
 	private backBackground: HTMLDivElement;
 	private backDisplay: HTMLImageElement;
@@ -44,7 +41,6 @@ export class UI {
 		totalImages: number
 	) {
 		this.background = document.querySelector('.lightbox');
-		this.handleCursorOffset = this.handleCursorOffset.bind(this);
 		this.totalImages = totalImages;
 
 		const display = document.createElement('img');
@@ -53,6 +49,7 @@ export class UI {
 
 		this.backDisplay = display;
 
+		this.zoomHandler = new ZoomHandler(zoomConfig, this);
 		this.animationHandler = new AnimationHandler(display, animationConfig);
 
 		const uiElements = {
@@ -61,7 +58,6 @@ export class UI {
 			counter: this.createCounter(),
 		};
 
-		this.config.zoom = { ...defaultZoom, ...zoomConfig };
 		this.config.counter = { ...defaultCounter, ...counterConfig };
 
 		this.background.appendChild(display);
@@ -73,7 +69,7 @@ export class UI {
 
 		this.background.addEventListener('click', this.close.bind(this));
 
-		this.display.addEventListener('click', this.handleZoom.bind(this));
+		this.display.addEventListener('click', this.zoomHandler.listener);
 	}
 
 	get display() {
@@ -105,21 +101,6 @@ export class UI {
 
 		this.backBackground = value;
 	}
-	private offsetPos(clientX, clientY, bounds) {
-		const offsetX = (clientX - bounds.left) / bounds.width;
-		const offsetY = (clientY - bounds.top) / bounds.height;
-		return { offsetX, offsetY };
-	}
-
-	private handleZoom({ clientX, clientY, target }) {
-		const bounds = target.getBoundingClientRect();
-		const offsets = this.offsetPos(clientX, clientY, bounds);
-		if (this.display.style.transform === '') {
-			this.zoom(offsets);
-		} else {
-			this.unzoom();
-		}
-	}
 
 	private createCounter() {
 		const counter = document.createElement('span');
@@ -149,61 +130,11 @@ export class UI {
 		return arrowContainer;
 	}
 
-	private preventNativeZoom(e: WheelEvent) {
-		if (e.ctrlKey) e.preventDefault(); //prevent zoom
-	}
-	private allowZoom() {
-		document.body.removeEventListener('wheel', this.preventNativeZoom);
-	}
-	private blockZoom() {
-		const options = { passive: false };
-		document.body.addEventListener(
-			'wheel',
-			this.preventNativeZoom,
-			options
-		);
-	}
-	private unzoom() {
-		this.display.classList.remove('zoomed');
-		this.display.style.transform = '';
-		this.elements.prev.style.visibility = 'visible';
-		this.elements.next.style.visibility = 'visible';
-		window.removeEventListener('mousemove', this.handleCursorOffset);
-	}
-	private zoom({ offsetX, offsetY }, level = this.config.zoom.level) {
-		this.display.style.transformOrigin = `${offsetX * 100}% ${
-			offsetY * 100
-		}%`;
-		this.display.classList.add('zoomed');
-		this.elements.prev.style.visibility = 'hidden';
-		this.elements.next.style.visibility = 'hidden';
-		this.display.style.transform = `scale(${level})`;
-
-		window.addEventListener('mousemove', this.handleCursorOffset);
-	}
-
-	private handleCursorOffset(e) {
-		const { clientX, clientY } = e;
-		const bounds = this.display.getBoundingClientRect();
-		const offsets = this.offsetPos(clientX, clientY, bounds);
-		this.display.style.transformOrigin = `${offsets.offsetX * 100}% ${
-			offsets.offsetY * 100
-		}%`;
-	}
-
-	private allowScroll() {
-		document.body.style.overflowY = 'visible';
-	}
-
-	private blockScroll() {
-		document.body.style.overflowY = 'hidden';
-	}
-
 	public open = ({ target }: MouseEvent, element: ImageObject) => {
 		if (!(target instanceof HTMLImageElement)) return;
 
-		this.blockZoom();
-		this.blockScroll();
+		blockScroll();
+		if (this.zoomHandler.config.blockNative) this.zoomHandler.blockNative();
 		this.background.classList.add('show');
 		this.isOpen = true;
 	};
@@ -211,9 +142,9 @@ export class UI {
 	public close = (e: MouseEvent) => {
 		if (!(e.target instanceof HTMLDivElement)) return;
 
-		this.unzoom();
-		this.allowZoom();
-		this.allowScroll();
+		this.zoomHandler.unzoom();
+		this.zoomHandler.allowNative();
+		allowScroll();
 		this.isOpen = false;
 		this.background.classList.remove('show');
 	};
