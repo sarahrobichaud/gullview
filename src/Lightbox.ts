@@ -4,6 +4,7 @@ import ZoomManager, { ZoomConfig } from "./Zoom";
 
 import type { LightboxConfig } from "./types/Config";
 import { isGVDisplayElement, type ImageObject } from "./types/Gullview";
+import Dock, { UIElement } from "./ui/Dock";
 
 export default class Lightbox {
   private _images: Array<ImageObject>;
@@ -24,6 +25,10 @@ export default class Lightbox {
     );
 
     const ui = new UI(config.counter, images.length);
+
+    if (config.dock?.enabled) {
+      const dock = new Dock(ui, config.dock);
+    }
 
     ui.animationHandlers.set(
       "display",

@@ -5,10 +5,6 @@ import { LightboxConfig, UIConfig } from "./types/Config";
 import { ImageObject, UIElement } from "./types/Gullview";
 import { allowScroll, blockScroll } from "./utils/scroll";
 
-const defaultCounter = {
-  show: false,
-} satisfies UIConfig["counter"];
-
 export class UI {
   private _animationHandlers: Map<string, AnimationHandler>;
   private _zoomManager: ZoomManager;
@@ -40,12 +36,12 @@ export class UI {
       display: this.display,
     } satisfies UIElement;
 
-    this.config.counter = { ...defaultCounter, ...counterConfig };
+    this.config.counter = { ...{ enabled: true }, ...counterConfig };
 
     this.background.appendChild(display);
 
     this.elementList.forEach(([key, uiElem]) => {
-      if (!this.config.counter.show && key === "counter") return;
+      if (!this.config.counter.enabled && key === "counter") return;
 
       if (!("animation" in uiElem)) {
         return this.background.appendChild(uiElem);

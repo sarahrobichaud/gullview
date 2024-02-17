@@ -11,11 +11,17 @@ try {
     animation: {
       display: {
         enabled: true,
-        duration: 300,
+        duration: 600,
       },
     },
     counter: {
-      show: true,
+      enabled: true,
+    },
+    dock: {
+      enabled: true,
+      motion: true,
+      download: true,
+      zoom: true,
     },
   });
   lightbox.init();
