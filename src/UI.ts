@@ -139,19 +139,49 @@ export class UI {
     return arrowContainer;
   }
 
-  public open = ({ target }: MouseEvent, element: ImageObject) => {
+  public open = (
+    { target, clientX, clientY }: MouseEvent,
+    element: ImageObject
+  ) => {
     if (!(target instanceof HTMLImageElement)) return;
 
     blockScroll();
+
+    // calculate offset from target position to center of screen
+
+    const bounds = target.getBoundingClientRect();
+    console.log(bounds);
+
+    // get center of screen
+
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    // calculate offset from center of target to center of screen
+
+    const offsetX = centerX - bounds.left - bounds.width / 2;
+
+    const offsetY = centerY - bounds.top - bounds.height / 2;
+
+    // translate the display
+
+    this.display.element.classList.add("morph");
+    this.display.element.style.translate = `${-offsetX}px ${-offsetY}px`;
+
+    setTimeout(() => {
+      this.display.element.style.translate = "0 0";
+      this.display.element.classList.remove("morph");
+    }, 800);
+
     if (this.zoomManager.config.blockNative) this.zoomManager.blockNative();
     this.background.classList.add("show");
     this.isOpen = true;
   };
 
   public close = (e: MouseEvent) => {
+    console.log("closing");
     if (!(e.target instanceof HTMLDivElement)) return;
 
-    if (e.bubbles) return;
     this.zoomManager.unzoom();
     this.zoomManager.allowNative();
     allowScroll();

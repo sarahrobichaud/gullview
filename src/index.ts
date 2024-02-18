@@ -18,9 +18,8 @@ try {
       enabled: true,
     },
     dock: {
-      enabled: true,
+      enabled: false,
       motion: true,
-      download: true,
       zoom: true,
     },
   });
