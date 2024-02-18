@@ -24,7 +24,7 @@ export default class Lightbox {
       document.querySelectorAll(`.${config.targetClass}`)
     );
 
-    const ui = new UI(config.counter, images.length);
+    const ui = new UI(images.length);
 
     if (config.dock?.enabled) {
       const dock = new Dock(ui, config.dock);
@@ -102,7 +102,7 @@ export default class Lightbox {
 
   private handleOpen(e: MouseEvent, element: ImageObject) {
     this.currentImage = element;
-    this.ui.open(e, element);
+    this.ui.open(e);
   }
 
   private handleNext() {

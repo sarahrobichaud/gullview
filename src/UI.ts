@@ -18,7 +18,7 @@ export class UI {
   private config = {} as UIConfig;
   private totalImages: number;
 
-  constructor(counterConfig: LightboxConfig["counter"], totalImages: number) {
+  constructor(totalImages: number) {
     this._animationHandlers = new Map();
     this.background = document.querySelector(".lightbox");
     this.totalImages = totalImages;
@@ -32,17 +32,12 @@ export class UI {
     this._elements = {
       prev: this.createArrow("prev"),
       next: this.createArrow("next"),
-      counter: this.createCounter(),
       display: this.display,
     } satisfies UIElement;
 
-    this.config.counter = { ...{ enabled: true }, ...counterConfig };
-
     this.background.appendChild(display);
 
-    this.elementList.forEach(([key, uiElem]) => {
-      if (!this.config.counter.enabled && key === "counter") return;
-
+    this.elementList.forEach(([_key, uiElem]) => {
       if (!("animation" in uiElem)) {
         return this.background.appendChild(uiElem);
       } else {
@@ -111,18 +106,6 @@ export class UI {
     this.backBackground = value;
   }
 
-  private createCounter() {
-    const counter = document.createElement("span");
-    const count = document.createTextNode("22/43");
-
-    counter.classList.add("lightbox__counter");
-    counter.appendChild(count);
-
-    this.elements.counter = counter;
-
-    return counter;
-  }
-
   private createArrow(dir: "prev" | "next"): HTMLButtonElement {
     const arrowContainer = document.createElement("button");
 
@@ -139,10 +122,7 @@ export class UI {
     return arrowContainer;
   }
 
-  public open = (
-    { target, clientX, clientY }: MouseEvent,
-    element: ImageObject
-  ) => {
+  public open = ({ target }: MouseEvent) => {
     if (!(target instanceof HTMLImageElement)) return;
 
     blockScroll();
@@ -196,10 +176,6 @@ export class UI {
   ) => {
     // Clear old timeouts
     this.display.animation?.clearQueue();
-
-    this.elements.counter.textContent = `${element.index + 1}/${
-      this.totalImages
-    }`;
 
     if (skipAnimation || !this.display.animation?.config.enabled) {
       this.display.element.setAttribute("src", element.image.src);

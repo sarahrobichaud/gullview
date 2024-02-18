@@ -29,7 +29,10 @@ export default class ZoomHandler {
     if (e.ctrlKey) e.preventDefault(); //prevent zoom
   }
 
-  private zoom({ offsetX, offsetY }, level = this.config.level) {
+  private zoom(
+    { offsetX, offsetY }: { offsetX: number; offsetY: number },
+    level = this.config.level
+  ) {
     this.ui.display.element.style.transformOrigin = `${offsetX * 100}% ${
       offsetY * 100
     }%`;
@@ -41,7 +44,7 @@ export default class ZoomHandler {
     window.addEventListener("mousemove", this.handleCursorOffset);
   }
 
-  private handleCursorOffset(e) {
+  private handleCursorOffset(e: MouseEvent) {
     const { clientX, clientY } = e;
     const bounds = this.ui.display.element.getBoundingClientRect();
     const offsets = offsetPos(clientX, clientY, bounds);
@@ -69,7 +72,9 @@ export default class ZoomHandler {
     document.body.addEventListener("wheel", this.blockZoomHandler, options);
   };
 
-  public listener = ({ clientX, clientY, target }) => {
+  public listener = ({ clientX, clientY, target }: MouseEvent) => {
+    if (!(target instanceof HTMLDivElement)) return;
+
     const bounds = target.getBoundingClientRect();
     const offsets = offsetPos(clientX, clientY, bounds);
     if (this.ui.display.element.style.transform === "") {

@@ -1,16 +1,17 @@
 {
-	"name": "lightbox",
-	"version": "1.0.0",
-	"description": "A simple lightbox for images",
-	"main": "esbuild.js",
-	"scripts": {
-		"build:watch": "esbuild --watch --sourcemap --minify --bundle src/index.ts --outfile=dist/lightbox.js",
-		"build": "esbuild --bundle src/index.ts--outfile=dist/lightbox.js"
-	},
-	"keywords": [],
-	"author": "Sarah Robichaud",
-	"license": "MIT",
-	"devDependencies": {
-		"esbuild": "^0.20.0"
-	}
+  "name": "lightbox",
+  "version": "1.0.0",
+  "description": "A simple lightbox for images",
+  "main": "esbuild.js",
+  "scripts": {
+    "build:watch": "esbuild --watch --sourcemap --minify --bundle src/index.ts --outfile=dist/lightbox.js",
+    "build": "esbuild --bundle --sourcemap src/index.ts --outfile=dist/lightbox.js && tsc --outDir dist"
+  },
+  "keywords": [],
+  "author": "Sarah Robichaud",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.20.0",
+    "typescript": "^5.3.3"
+  }
 }

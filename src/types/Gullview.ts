@@ -15,7 +15,7 @@ interface BaseGVElement<T> {
   animation: T | null;
 }
 
-interface GVDisplay extends BaseGVElement<DisplayAnimationHandler> {
+export interface GVDisplay extends BaseGVElement<DisplayAnimationHandler> {
   element: HTMLImageElement;
   kind: "display";
 }
@@ -30,6 +30,5 @@ export const isGVDisplayElement = (elem: unknown): elem is GVDisplay => {
 export type UIElement = {
   prev: HTMLButtonElement;
   next: HTMLButtonElement;
-  counter: HTMLSpanElement;
   display: GVDisplay;
 };

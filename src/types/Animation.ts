@@ -12,3 +12,9 @@ export type AnimationDisplayConfig = {
 export type AnimationConfig = {
   display: AnimationDisplayConfig;
 };
+
+export type CounterConfig = {
+  enabled: boolean;
+  y: "top" | "bottom";
+  x: "left" | "center" | "right";
+};

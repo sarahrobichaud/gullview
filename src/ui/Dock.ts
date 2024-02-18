@@ -60,14 +60,15 @@ export default class Dock extends UIElement {
       download: ["download", "button", this.element, "Download"],
     } satisfies Record<
       keyof Omit<DockConfig, "enabled">,
-      [string, string, HTMLElement, string]
+      [string, keyof HTMLElementTagNameMap, HTMLElement, string]
     >;
 
     Object.entries(rest).forEach(([key, value]) => {
-      const [name, tag, container, text] = elementMap[key];
+      const [name, tag, container, text] =
+        elementMap[key as keyof Omit<DockConfig, "enabled">];
       console.log({ key, value });
 
-      if (this.config[key]) {
+      if (this.config[key as keyof DockConfig]) {
         this.elements.push(new UIElement(name, tag, container, text));
       }
     });

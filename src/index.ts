@@ -1,4 +1,4 @@
-import Lightbox from "./Lightbox.ts";
+import Lightbox from "./Lightbox";
 
 try {
   const lightbox = Lightbox.build({
@@ -24,7 +24,9 @@ try {
     },
   });
   lightbox.init();
-} catch (e) {
-  console.log(e);
-  console.error(`Error: ${e.message}`);
+} catch (e: unknown) {
+  if (e instanceof Error) {
+    console.log(e);
+    console.error(`Error: ${e.message}`);
+  }
 }
