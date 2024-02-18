@@ -1,89 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="./styles.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="./demo.css" />
+    <link rel="stylesheet" href="./gullview.css" />
+    <link rel="stylesheet" href="./gullview-anim.css" />
+  </head>
+  <body>
     <main>
-
-        <h1>Simple Lightbox</h1>
-        <pre id="debug">
-        </pre>
-        <div class="lightbox">
-            <button>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-arrow-left">
-                    <path d="m12 19-7-7 7-7" />
-                    <path d="M19 12H5" />
-                </svg>
-
-            </button>
-            <img class="lightbox__img"
-                src="https://images.unsplash.com/photo-1618851630734-386680a46b6b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGlydGJpa2V8ZW58MHwwfDB8fHww"
-                alt="">
-            <button>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-arrow-right">
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                </svg>
-            </button>
+      <div id="title-container">
+        <img src="./brand/logo-clear-black.svg" alt="" />
+        <a href="https://staging.siteharbor.ca">siteharbor.ca</a>
+      </div>
+      <div class="lightbox"></div>
+      <div id="gallery">
+        <div class="lightbox__src">
+          <img src="/public/demo-images/1.jpg" alt="gesrgesw" />
         </div>
-        <div id="gallery">
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1618851630734-386680a46b6b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGlydGJpa2V8ZW58MHwwfDB8fHww"
-                    alt="">
-            </div>
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1554205624-6db5daebc493?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="">
-            </div>
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1605121476668-ae388fa8fe27?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="">
-            </div>
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1549530273-0c92279cf4c8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="">
-            </div>
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1551759390-5c112a9ffef0?q=80&w=1930&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="">
-            </div>
-            <div class="img-card">
-
-                <img src="https://images.unsplash.com/photo-1582128277384-cdda7717bd12?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="" srcset="">
-            </div>
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1445605081472-9788fb3bc02f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="">
-            </div>
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1489730955284-365747312681?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="">
-            </div>
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1608566048123-c266ed1c7cd8?q=80&w=1848&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="">
-            </div>
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1445605081472-9788fb3bc02f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="">
-            </div>
-            <div class="img-card">
-                <img src="https://images.unsplash.com/photo-1445605081472-9788fb3bc02f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="">
-            </div>
+        <div class="lightbox__src">
+          <img src="/public/demo-images/2.jpg" alt="gesrgesw" />
         </div>
+        <div class="lightbox__src">
+          <img src="/public/demo-images/3.jpg" alt="egtsds" />
+        </div>
+        <div class="lightbox__src">
+          <img src="/public/demo-images/4.jpg" alt="gesrgesw" />
+        </div>
+        <div class="lightbox__src">
+          <img src="/public/demo-images/5.jpg" alt="gesrgesw" />
+        </div>
+        <div class="lightbox__src">
+          <img src="/public/demo-images/6.jpg" alt="gesrgesw" />
+        </div>
+      </div>
+      <div id="details-container">
+        <h2>Installation</h2>
+        <code>npm install blah blah blah</code>
+        <h2>Usage</h2>
+        <code>
+          const lightbox = Lightbox.build({
+          <br />
+          targetClass: "lightbox__src",
+          <br />
+          zoom: { <br />
+          enabled: true, level: 3, blockNative: true, }, animation: { display: {
+          enabled: true, duration: 600, }, }, counter: { enabled: true, }, dock:
+          { enabled: true, motion: true, zoom: true, }, }); lightbox.init();
+        </code>
+        <code>
+          import Gullview from "@siteharbor/gullview";
+          <br />
+          <br />
+          const gullview = new Gullview.build({ ...config })
+          <br />
+          gullview.init();
+        </code>
+      </div>
     </main>
 
     <script src="/dist/lightbox.js"></script>
-</body>
+  </body>
 </html>
