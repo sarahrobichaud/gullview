@@ -1,8 +1,8 @@
 ![Logo](/images/logo.svg)
 
-An image lightbox library.
+A lightbox library for images.
 
-**Work in progress**
+**⚙️ Work in progress**
 
 ## Installation
 
