@@ -1,16 +1,35 @@
 {
-  "name": "lightbox",
-  "version": "1.0.0",
-  "description": "A simple lightbox for images",
-  "main": "esbuild.js",
+  "name": "@siteharbor/gullview",
+  "version": "0.0.2",
+  "description": "A lightbox for images",
+  "type": "module",
+  "main": "dist/gullview.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/gullview.d.ts",
   "scripts": {
     "build:watch": "esbuild --watch --sourcemap --minify --bundle src/index.ts --outfile=dist/lightbox.js",
-    "build": "esbuild --bundle --sourcemap src/index.ts --outfile=dist/lightbox.js && tsc --outDir dist"
+    "build": "node build && dts-bundle-generator -o dist/gullview.d.ts src/Gullview.ts",
+    "lint": "tsc --noEmit",
+    "pack:test": "npm pack && tar -xvzf *.tgz"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siteharbor/gullview.git"
+  },
+  "keywords": [
+    "lightbox",
+    "image-viewer"
+  ],
   "author": "Sarah Robichaud",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/siteharbor/gullview/issues"
+  },
+  "homepage": "https://github.com/siteharbor/gullview#readme",
   "devDependencies": {
+    "dts-bundle-generator": "^9.3.1",
     "esbuild": "^0.20.0",
     "typescript": "^5.3.3"
   }

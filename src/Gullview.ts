@@ -1,12 +1,14 @@
-import { DisplayAnimationHandler, AnimationDisplayConfig } from "./Animation";
+import Dock from "./ui/Dock";
+import ZoomManager from "./Zoom";
+
+import { DisplayAnimationHandler } from "./Animation";
 import { UI } from "./UI";
-import ZoomManager, { ZoomConfig } from "./Zoom";
+import { isGVDisplayElement } from "./types/Gullview";
 
+import type { ImageObject } from "./types/Gullview";
 import type { LightboxConfig } from "./types/Config";
-import { isGVDisplayElement, type ImageObject } from "./types/Gullview";
-import Dock, { UIElement } from "./ui/Dock";
 
-export default class Lightbox {
+export default class Gullview {
   private _images: Array<ImageObject>;
   private _currentImage: ImageObject;
   public readonly config: LightboxConfig;
@@ -37,7 +39,7 @@ export default class Lightbox {
 
     ui.zoomManager = new ZoomManager(ui, config.zoom);
 
-    return new Lightbox(config, ui, images);
+    return new Gullview(config, ui, images);
   }
 
   get animationHandlers() {
@@ -151,12 +153,6 @@ export default class Lightbox {
           });
           break;
       }
-
-      // element.addEventListener("click", (e) => {
-      //   e.stopPropagtion();
-      //   if (element.classList.contains("prev")) this.handlePrev();
-      //   if (element.classList.contains("next")) this.handleNext();
-      // });
     });
   };
 }
