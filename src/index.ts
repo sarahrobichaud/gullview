@@ -5,20 +5,14 @@ export const build = (config: LightboxConfig) => {
     return Gullview.build(config);
 };
 
+// Sandbox
 build({
     targetClass: 'lightbox__src',
     animation: {
-        display: {
-            enabled: true,
-            duration: 600,
-            morph: {
-                enabled: false,
-                duration: 1000,
-            },
-        },
+        display: { enabled: true },
     },
     dock: {
         enabled: true,
-        download: true,
+        zoom: true,
     },
 }).init();
