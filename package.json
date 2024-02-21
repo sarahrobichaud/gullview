@@ -1,36 +1,36 @@
 {
-  "name": "@siteharbor/gullview",
-  "version": "0.1.0",
-  "description": "A lightbox for images",
-  "type": "module",
-  "main": "dist/gullview.js",
-  "files": [
-    "dist"
-  ],
-  "types": "dist/gullview.d.ts",
-  "scripts": {
-    "build:watch": "esbuild --watch --sourcemap --minify --bundle src/index.ts --outfile=dist/lightbox.js",
-    "build": "node build && dts-bundle-generator -o dist/gullview.d.ts src/Gullview.ts",
-    "lint": "tsc --noEmit",
-    "pack:test": "npm pack && tar -xvzf *.tgz"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/siteharbor/gullview.git"
-  },
-  "keywords": [
-    "lightbox",
-    "image-viewer"
-  ],
-  "author": "Sarah Robichaud",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/siteharbor/gullview/issues"
-  },
-  "homepage": "https://github.com/siteharbor/gullview#readme",
-  "devDependencies": {
-    "dts-bundle-generator": "^9.3.1",
-    "esbuild": "^0.20.0",
-    "typescript": "^5.3.3"
-  }
+    "name": "@siteharbor/gullview",
+    "version": "0.1.0",
+    "description": "A lightbox library for images",
+    "type": "module",
+    "main": "dist/gullview.js",
+    "files": [
+        "dist"
+    ],
+    "types": "dist/gullview.d.ts",
+    "scripts": {
+        "dev": "esbuild --watch --sourcemap --bundle src/index.ts --outfile=public/main.js",
+        "build": "node build && dts-bundle-generator -o dist/gullview.d.ts src/Gullview.ts",
+        "lint": "tsc --noEmit",
+        "pack:test": "npm pack && tar -xvzf *.tgz"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/siteharbor/gullview.git"
+    },
+    "keywords": [
+        "lightbox",
+        "image-viewer"
+    ],
+    "author": "Sarah Robichaud",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/siteharbor/gullview/issues"
+    },
+    "homepage": "https://github.com/siteharbor/gullview#readme",
+    "devDependencies": {
+        "dts-bundle-generator": "^9.3.1",
+        "esbuild": "^0.20.0",
+        "typescript": "^5.3.3"
+    }
 }

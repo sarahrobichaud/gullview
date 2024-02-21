@@ -9,14 +9,12 @@ export type LightboxConfig = {
     };
     zoom?: Partial<ZoomConfig>;
     counter?: Partial<CounterConfig>;
-    dock?: Partial<DockConfig>;
 };
 
 export type UIConfig = {
     animation: AnimationConfig;
     zoom: ZoomConfig;
     counter: CounterConfig;
-    dock: DockConfig;
 };
 
 export type DockConfig = {

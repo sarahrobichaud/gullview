@@ -28,6 +28,50 @@ export class DisplayAnimationHandler {
         this.injectCSSClasses();
     }
 
+    private injectCSSClasses() {
+        const head = document.head || document.getElementsByTagName('head')[0];
+        const style = document.createElement('style');
+
+        const nextKF = this.config?.next || displayDefaults.next;
+        const prevKF = this.config?.prev || displayDefaults.prev;
+        const transitionDuration =
+            (this.config?.duration || displayDefaults.duration) / 2;
+
+        const morphDuration = this.config.morph!.duration;
+
+        const css = `
+			.lightbox__display.slideIn.next {
+    			animation: ${nextKF} ${transitionDuration}ms normal forwards;
+				animation-timing-function: ease-out;
+			}
+
+			.lightbox__display.slideOut.next {
+    			animation: ${prevKF} ${transitionDuration}ms normal forwards;
+				animation-timing-function: ease-in;
+			}
+
+			.lightbox__display.slideIn.prev {
+    			animation: ${prevKF} ${transitionDuration}ms reverse forwards;
+				animation-timing-function: ease-out;
+			}
+
+			.lightbox__display.slideOut.prev {
+				animation-timing-function: ease-in;
+    			animation: ${nextKF} ${transitionDuration}ms reverse forwards;
+			}
+            .lightbox__display.morph {
+                -webkit-animation: display-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+                animation: display-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+            }
+            .lightbox.show {
+                -webkit-animation: background-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+                animation: background-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+            }
+			`;
+        head.appendChild(style);
+        style.appendChild(document.createTextNode(css));
+    }
+
     public morphFrom = (target: EventTarget) => {
         this.clearQueue();
         if (!(target instanceof HTMLElement))
@@ -97,47 +141,5 @@ export class DisplayAnimationHandler {
             )
         );
     };
-
-    private injectCSSClasses() {
-        const head = document.head || document.getElementsByTagName('head')[0];
-        const style = document.createElement('style');
-
-        const nextKF = this.config?.next || displayDefaults.next;
-        const prevKF = this.config?.prev || displayDefaults.prev;
-        const transitionDuration =
-            (this.config?.duration || displayDefaults.duration) / 2;
-
-        const morphDuration = this.config.morph!.duration;
-
-        console.log({ morphDuration });
-
-        const css = `
-			.lightbox__display.slideIn.next {
-    			animation: ${nextKF} ${transitionDuration}ms normal forwards;
-				animation-timing-function: ease-out;
-			}
-
-			.lightbox__display.slideOut.next {
-    			animation: ${prevKF} ${transitionDuration}ms normal forwards;
-				animation-timing-function: ease-in;
-			}
-
-			.lightbox__display.slideIn.prev {
-    			animation: ${prevKF} ${transitionDuration}ms reverse forwards;
-				animation-timing-function: ease-out;
-			}
-
-			.lightbox__display.slideOut.prev {
-				animation-timing-function: ease-in;
-    			animation: ${nextKF} ${transitionDuration}ms reverse forwards;
-			}
-            .lightbox__display.morph {
-                -webkit-animation: display-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
-                animation: display-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
-}
-			`;
-        head.appendChild(style);
-        style.appendChild(document.createTextNode(css));
-    }
 }
 export { AnimationDisplayConfig };

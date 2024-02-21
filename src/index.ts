@@ -5,6 +5,7 @@ export const build = (config: LightboxConfig) => {
     return Gullview.build(config);
 };
 
+// Sandbox
 build({
     targetClass: 'lightbox__src',
     animation: {
@@ -12,13 +13,9 @@ build({
             enabled: true,
             duration: 600,
             morph: {
-                enabled: false,
-                duration: 1000,
+                enabled: true,
+                duration: 400,
             },
         },
-    },
-    dock: {
-        enabled: true,
-        download: true,
     },
 }).init();
