@@ -21,71 +21,66 @@ export class UIElement {
         this.element = element;
     }
 }
-export class DockElement extends UIElement {
-    public dock: Dock;
-    constructor(name: string, tag: keyof HTMLElementTagNameMap, dock: Dock) {
-        if (!(dock.element instanceof HTMLElement))
-            throw new Error('Dock not found');
+// export class DockElement extends UIElement {
+//     public dock: Dock;
+//     constructor(name: string, tag: keyof HTMLElementTagNameMap, dock: Dock) {
+//         if (!(dock.element instanceof HTMLElement))
+//             throw new Error('Dock not found');
 
-        super(`dock--element`, tag, dock.element);
-        this.dock = dock;
+//         super(`dock--element`, tag, dock.element);
+//         this.dock = dock;
 
-        this.element.classList.add(name);
-    }
-}
+//         this.element.classList.add(name);
+//     }
+// }
 
-const defaultDock = {
-    enabled: false,
-    zoom: false,
-    motion: false,
-    download: false,
-} satisfies DockConfig;
+// const defaultDock = {
+//     enabled: false,
+//     zoom: false,
+//     motion: false,
+//     download: false,
+// } satisfies DockConfig;
 
-export default class Dock extends UIElement {
-    public config = {} as DockConfig;
-    public children: UIElement[] = [];
-    private ui = {} as UI;
+// export default class Dock extends UIElement {
+//     public config = {} as DockConfig;
+//     public children: UIElement[] = [];
+//     private ui = {} as UI;
 
-    public isHovered = false;
+//     public isHovered = false;
 
-    constructor(parent: UI, config?: Partial<DockConfig>) {
-        super('dock', 'div', parent.background);
+//     constructor(parent: UI, config?: Partial<DockConfig>) {
+//         super('dock', 'div', parent.background);
 
-        this.config = { ...defaultDock, ...config };
-        this.ui = parent;
+//         this.config = { ...defaultDock, ...config };
+//         this.ui = parent;
 
-        if (!this.config.enabled) return;
-        this.element.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
+//         if (!this.config.enabled) return;
+//     }
 
-        this.element.addEventListener('mouseenter', this.handleMouseEnter);
-        this.element.addEventListener('mouseleave', this.handleMouseLeave);
-    }
+// }
+// private handleMouseEnter = () => {
+//     this.isHovered = true;
+//     const display = this.ui.display.element;
+//     this.ui.zoomManager.stopTrackingMouse();
+//     display.classList.add('smooth-origin');
+//     display.style.transformOrigin = '50% 50%';
+// };
 
-    // private handleMouseEnter = () => {
-    //     this.isHovered = true;
-    //     const display = this.ui.display.element;
-    //     this.ui.zoomManager.stopTrackingMouse();
-    //     display.classList.add('smooth-origin');
-    //     display.style.transformOrigin = '50% 50%';
-    // };
+// private handleMouseLeave = ({ clientX, clientY }: MouseEvent) => {
+//     this.isHovered = false;
+//     const display = this.ui.display.element;
 
-    // private handleMouseLeave = ({ clientX, clientY }: MouseEvent) => {
-    //     this.isHovered = false;
-    //     const display = this.ui.display.element;
+//     const bounds = display.getBoundingClientRect();
+//     const offsets = offsetPos(clientX, clientY, bounds);
+//     if (this.ui.zoomManager.isZoomed) this.ui.zoomManager.zoom(offsets);
 
-    //     const bounds = display.getBoundingClientRect();
-    //     const offsets = offsetPos(clientX, clientY, bounds);
-    //     if (this.ui.zoomManager.isZoomed) this.ui.zoomManager.zoom(offsets);
-
-    //     // Resume mouse tracking
-    //     setTimeout(() => {
-    //         this.ui.zoomManager.startTrackingMouse();
-    //         display.classList.remove('smooth-origin');
-    //     }, 1000);
-    // };
-}
+//     // Resume mouse tracking
+//     setTimeout(() => {
+//         this.ui.zoomManager.startTrackingMouse();
+//         display.classList.remove('smooth-origin');
+//     }, 1000);
+// };
+//}
 
 // export class ZoomElement extends DockElement {
 //     private zoomHandler: ZoomHandler;

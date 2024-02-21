@@ -1,4 +1,3 @@
-import Dock from './ui/Dock';
 import ZoomManager from './Zoom';
 
 import { DisplayAnimationHandler } from './animation/Display';
@@ -26,7 +25,7 @@ export default class Gullview {
             document.querySelectorAll(`.${config.targetClass}`)
         );
 
-        const ui = new UI(images.length);
+        const ui = new UI();
 
         ui.animationHandlers.set(
             'display',
@@ -41,15 +40,11 @@ export default class Gullview {
         return new Gullview(config, ui, images);
     }
 
-    get animationHandlers() {
-        return this.ui.animationHandlers;
-    }
-
-    get currentImage(): ImageObject {
+    private get currentImage(): ImageObject {
         return this._currentImage;
     }
 
-    set currentImage(value: ImageObject) {
+    private set currentImage(value: ImageObject) {
         const jumping =
             (this.currentImage?.index === this.images.length - 1 &&
                 value.index === 0) ||
@@ -65,11 +60,11 @@ export default class Gullview {
         this._currentImage = value;
     }
 
-    get images(): ImageObject[] {
+    private get images(): ImageObject[] {
         return this._images;
     }
 
-    set images(value: unknown[]) {
+    private set images(value: unknown[]) {
         const imageObjects = value.map((parent, idx) => {
             if (!(parent instanceof HTMLElement))
                 throw new Error(

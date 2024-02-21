@@ -1,27 +1,21 @@
-import { DisplayAnimationHandler } from './animation/Display';
-import ZoomManager, { ZoomConfig } from './Zoom';
+import ZoomManager from './Zoom';
 import { AnimationHandler } from './types/Animation';
-import { LightboxConfig, UIConfig } from './types/Config';
 import { ImageObject, UIElement } from './types/Gullview';
 import { allowScroll, blockScroll } from './utils/scroll';
 
 export class UI {
-    private _animationHandlers: Map<string, AnimationHandler>;
+    public animationHandlers: Map<string, AnimationHandler>;
+    public isOpen: boolean = false;
+
     private _zoomManager: ZoomManager;
 
-    private backBackground: HTMLDivElement;
+    private _background: HTMLDivElement;
     private _display: HTMLImageElement;
     private _elements = {} as UIElement;
 
-    private backIsOpen: boolean = false;
-
-    private config = {} as UIConfig;
-    private totalImages: number;
-
-    constructor(totalImages: number) {
-        this._animationHandlers = new Map();
+    constructor() {
+        this.animationHandlers = new Map();
         this.background = document.querySelector('.lightbox');
-        this.totalImages = totalImages;
 
         const display = document.createElement('img');
         display.classList.add('lightbox__display');
@@ -34,7 +28,7 @@ export class UI {
             next: this.createArrow('next'),
             display: this.display,
         } satisfies UIElement;
-
+        //
         this.background.appendChild(display);
 
         this.elementList.forEach(([_key, uiElem]) => {
@@ -50,20 +44,16 @@ export class UI {
 
     /* Handlers */
 
-    get animationHandlers() {
-        return this._animationHandlers;
-    }
-
-    get zoomManager(): ZoomManager {
+    public get zoomManager(): ZoomManager {
         return this._zoomManager;
     }
 
-    set zoomManager(value: ZoomManager) {
+    public set zoomManager(value: ZoomManager) {
         this.display.element.addEventListener('click', value.listener);
         this._zoomManager = value;
     }
 
-    get display(): UIElement['display'] {
+    public get display(): UIElement['display'] {
         return {
             element: this._display,
             kind: 'display',
@@ -74,37 +64,29 @@ export class UI {
     /**
      * Returns an object of UI elements
      */
-    get elements() {
+    public get elements() {
         return this._elements;
     }
 
     /**
      * Returns an array of key-value pairs of the UI elements
      */
-    get elementList() {
+    private get elementList() {
         return Object.entries(this.elements);
     }
 
-    get isOpen() {
-        return this.backIsOpen;
+    private get background(): HTMLDivElement {
+        return this._background;
     }
 
-    private set isOpen(value: boolean) {
-        this.backIsOpen = value;
-    }
-
-    get background(): HTMLDivElement {
-        return this.backBackground;
-    }
-
-    set background(value: unknown) {
+    private set background(value: unknown) {
         if (!value)
             throw new Error('No elements with a class of "lightbox" found');
 
         if (!(value instanceof HTMLDivElement))
             throw new Error('Lightbox must be a div');
 
-        this.backBackground = value;
+        this._background = value;
     }
 
     private createArrow(dir: 'prev' | 'next'): HTMLButtonElement {
@@ -129,10 +111,8 @@ export class UI {
         blockScroll();
 
         if (this.display.animation?.config.morph?.enabled) {
-            console.log('enabled');
             this.display.animation.morphFrom(target);
         }
-        console.log('opening');
 
         if (this.zoomManager.config.blockNative) this.zoomManager.blockNative();
         this.background.classList.add('show');
@@ -140,7 +120,6 @@ export class UI {
     };
 
     public close = (e: MouseEvent) => {
-        console.log('closing');
         if (!(e.target instanceof HTMLDivElement)) return;
 
         this.zoomManager.unzoom();
