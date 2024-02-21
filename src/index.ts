@@ -12,7 +12,8 @@ build({
             enabled: true,
             duration: 600,
             morph: {
-                duration: 600,
+                enabled: false,
+                duration: 1000,
             },
         },
     },

@@ -128,31 +128,11 @@ export class UI {
 
         blockScroll();
 
-        // calculate offset from target position to center of screen
-
-        const bounds = target.getBoundingClientRect();
-        console.log(bounds);
-
-        // get center of screen
-
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-
-        // calculate offset from center of target to center of screen
-
-        const offsetX = centerX - bounds.left - bounds.width / 2;
-
-        const offsetY = centerY - bounds.top - bounds.height / 2;
-
-        // translate the display
-
-        this.display.element.classList.add('morph');
-        this.display.element.style.translate = `${-offsetX}px ${-offsetY}px`;
-
-        setTimeout(() => {
-            this.display.element.style.translate = '0 0';
-            this.display.element.classList.remove('morph');
-        }, 800);
+        if (this.display.animation?.config.morph?.enabled) {
+            console.log('enabled');
+            this.display.animation.morphFrom(target);
+        }
+        console.log('opening');
 
         if (this.zoomManager.config.blockNative) this.zoomManager.blockNative();
         this.background.classList.add('show');

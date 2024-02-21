@@ -3,6 +3,7 @@ import { DisplayAnimationHandler } from '../animation/Display';
 export type AnimationHandler = DisplayAnimationHandler;
 
 export type AnimationDisplayMorphConfig = {
+    enabled: boolean;
     duration: number;
 };
 
@@ -11,7 +12,7 @@ export type AnimationDisplayConfig = {
     duration: number;
     next: string;
     prev: string;
-    morph: AnimationDisplayMorphConfig;
+    morph: Partial<AnimationDisplayMorphConfig>;
 };
 
 export type AnimationConfig = {
