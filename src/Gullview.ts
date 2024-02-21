@@ -28,10 +28,6 @@ export default class Gullview {
 
         const ui = new UI(images.length);
 
-        if (config.dock?.enabled) {
-            const dock = new Dock(ui, config.dock);
-        }
-
         ui.animationHandlers.set(
             'display',
             new DisplayAnimationHandler(

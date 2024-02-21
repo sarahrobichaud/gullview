@@ -6,13 +6,16 @@ export const build = (config: LightboxConfig) => {
 };
 
 // Sandbox
-build({
-    targetClass: 'lightbox__src',
-    animation: {
-        display: { enabled: true },
-    },
-    dock: {
-        enabled: true,
-        zoom: true,
-    },
-}).init();
+// build({
+//     targetClass: 'lightbox__src',
+//     animation: {
+//         display: {
+//             enabled: true,
+//             duration: 600,
+//             morph: {
+//                 enabled: true,
+//                 duration: 400,
+//             },
+//         },
+//     },
+// }).init();

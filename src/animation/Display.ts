@@ -134,7 +134,11 @@ export class DisplayAnimationHandler {
             .lightbox__display.morph {
                 -webkit-animation: display-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
                 animation: display-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
-}
+            }
+            .lightbox.show {
+                -webkit-animation: background-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+                animation: background-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+            }
 			`;
         head.appendChild(style);
         style.appendChild(document.createTextNode(css));
