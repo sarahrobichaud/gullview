@@ -7,7 +7,7 @@ export const build = (config: LightboxConfig) => {
 
 // Sandbox
 build({
-    targetClass: 'lightbox__src',
+    targetClass: 'gv_src',
     animation: {
         display: {
             enabled: true,

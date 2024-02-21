@@ -134,7 +134,7 @@ main {
     max-width: 80%;
 }
 
-.lightbox__src {
+.gv_src {
     display: flex;
     border-radius: 10px;
     justify-content: center;
@@ -142,7 +142,7 @@ main {
     transition: transform 200ms ease-in-out, filter 200ms ease-in-out;
 }
 
-.lightbox__src:hover {
+.gv_src:hover {
     cursor: pointer;
     filter: saturate(100%);
     transform: scale(1.1);

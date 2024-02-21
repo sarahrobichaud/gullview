@@ -68,14 +68,14 @@ export default class Gullview {
         const imageObjects = value.map((parent, idx) => {
             if (!(parent instanceof HTMLElement))
                 throw new Error(
-                    'Items targeted by lightbox must be HTMLImageElements'
+                    'Items targeted by gullview must be HTMLImageElements'
                 );
 
             const elem = parent.querySelector('img');
 
             if (!(elem instanceof HTMLImageElement))
                 throw new Error(
-                    'Items targeted by lightbox must contain an img element.'
+                    'Items targeted by gullview must contain an img element.'
                 );
 
             const [src, alt] = [

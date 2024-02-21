@@ -15,11 +15,11 @@ export class UI {
 
     constructor() {
         this.animationHandlers = new Map();
-        this.background = document.querySelector('.lightbox');
+        this.background = document.querySelector('.gullview');
 
         const display = document.createElement('img');
-        display.classList.add('lightbox__display');
-        display.setAttribute('alt', 'lightbox display');
+        display.classList.add('gv__display');
+        display.setAttribute('alt', 'Gullview display');
 
         this._display = display;
 
@@ -71,7 +71,7 @@ export class UI {
     /**
      * Returns an array of key-value pairs of the UI elements
      */
-    private get elementList() {
+    public get elementList() {
         return Object.entries(this.elements);
     }
 
@@ -99,7 +99,7 @@ export class UI {
 
         arrowContainer.innerHTML = dir === 'prev' ? leftArrow : rightArrow;
 
-        arrowContainer.classList.add('lightbox__arrow', dir);
+        arrowContainer.classList.add('gv__arrow', dir);
         this.elements[dir] = arrowContainer;
         this.background.appendChild(arrowContainer);
         return arrowContainer;

@@ -1,4 +1,4 @@
-.lightbox {
+.gullview {
     display: none;
     position: fixed;
     inset: 0;
@@ -7,11 +7,11 @@
     align-items: center;
     z-index: 2;
 }
-.lightbox.show {
+.gullview.show {
     overflow: hidden;
     display: flex;
 }
-.lightbox__display {
+.gv__display {
     border-radius: 1rem;
     object-fit: contain;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -22,23 +22,23 @@
     transition: transform 200ms ease-in-out;
 }
 
-.lightbox__display.moving {
+.gv__display.moving {
     pointer-events: none;
 }
 
-.lightbox__display.zoomed {
+.gv__display.zoomed {
     cursor: zoom-out;
 }
 
-.lightbox__arrow.next {
+.gv__arrow.next {
     position: absolute;
     right: 0;
 }
-.lightbox__arrow.prev {
+.gv__arrow.prev {
     position: absolute;
     left: 0;
 }
-.lightbox__counter {
+.gv__counter {
     position: absolute;
     top: 1rem;
     left: 1rem;
@@ -46,7 +46,7 @@
     font-size: 1.2rem;
 }
 
-.lightbox__arrow {
+.gv__arrow {
     display: flex;
     padding: 2rem;
     justify-content: center;
@@ -56,17 +56,17 @@
     opacity: 0.6;
     transition: transform 200ms ease-in-out, opacity 200ms ease-in-out;
 }
-.lightbox__arrow:hover {
+.gv__arrow:hover {
     cursor: pointer;
     transform: scale(1.4);
     opacity: 1;
 }
-.lightbox__arrow:active {
+.gv__arrow:active {
     cursor: pointer;
     transform: scale(1);
     opacity: 0.3;
 }
-.lightbox__arrow svg {
+.gv__arrow svg {
     stroke: var(--gv-arrow-color);
 }
 
@@ -116,10 +116,12 @@
 @-webkit-keyframes background-fade-in {
     0% {
         opacity: 0;
+        background-color: transparent;
         backdrop-filter: blur(0px);
     }
     100% {
-        backdrop-filter: blur(5px);
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(40px);
         opacity: 1;
     }
 }
@@ -172,5 +174,38 @@
     100% {
         translate: 0 0;
         opacity: 1;
+    }
+}
+
+@keyframes gv_next {
+    0% {
+        rotate: -10deg;
+        filter: saturate(0);
+        translate: 100vw;
+        opacity: 0;
+        scale: 0.5;
+    }
+    100% {
+        scale: 1;
+        opacity: 1;
+        filter: saturate(1);
+        rotate: 0;
+    }
+}
+@keyframes gv_prev {
+    0% {
+        scale: 1;
+        filter: saturate(1);
+        opacity: 1;
+        translate: 0;
+    }
+
+    100% {
+        opacity: 0;
+        scale: 0;
+        filter: saturate(0);
+        scale: 0.5;
+        translate: -100vw;
+        rotate: 10deg;
     }
 }

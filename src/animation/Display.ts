@@ -40,30 +40,30 @@ export class DisplayAnimationHandler {
         const morphDuration = this.config.morph!.duration;
 
         const css = `
-			.lightbox__display.slideIn.next {
+			.gv__display.slideIn.next {
     			animation: ${nextKF} ${transitionDuration}ms normal forwards;
 				animation-timing-function: ease-out;
 			}
 
-			.lightbox__display.slideOut.next {
+			.gv__display.slideOut.next {
     			animation: ${prevKF} ${transitionDuration}ms normal forwards;
 				animation-timing-function: ease-in;
 			}
 
-			.lightbox__display.slideIn.prev {
+			.gv__display.slideIn.prev {
     			animation: ${prevKF} ${transitionDuration}ms reverse forwards;
 				animation-timing-function: ease-out;
 			}
 
-			.lightbox__display.slideOut.prev {
+			.gv__display.slideOut.prev {
 				animation-timing-function: ease-in;
     			animation: ${nextKF} ${transitionDuration}ms reverse forwards;
 			}
-            .lightbox__display.morph {
+            .gv__display.morph {
                 -webkit-animation: display-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
                 animation: display-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
             }
-            .lightbox.show {
+            .gullview.show {
                 -webkit-animation: background-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
                 animation: background-fade-in ${morphDuration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
             }
