@@ -15,11 +15,14 @@
     border-radius: 1rem;
     object-fit: contain;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    cursor: zoom-in;
     max-width: calc(100vw - 12rem);
     max-height: calc(100vh - 20rem);
     transform-origin: center;
     transition: transform 200ms ease-in-out;
+}
+
+.gv__display.zoomable {
+    cursor: zoom-in;
 }
 
 .gv__display.moving {

@@ -8,6 +8,10 @@ export const build = (config: LightboxConfig) => {
 // Sandbox
 build({
     targetClass: 'gv_src',
+    zoom: {
+        enabled: true,
+        level: 3,
+    },
     animation: {
         display: {
             enabled: true,

@@ -18,6 +18,7 @@ export class UI {
         this.background = document.querySelector('.gullview');
 
         const display = document.createElement('img');
+
         display.classList.add('gv__display');
         display.setAttribute('alt', 'Gullview display');
 
@@ -49,7 +50,11 @@ export class UI {
     }
 
     public set zoomManager(value: ZoomManager) {
-        this.display.element.addEventListener('click', value.listener);
+        if (value.config.enabled) {
+            this.display.element.addEventListener('click', value.listener);
+            this.display.element.classList.add('zoomable');
+        }
+
         this._zoomManager = value;
     }
 

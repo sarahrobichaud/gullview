@@ -5,12 +5,12 @@ import { offsetPos } from './utils/position';
 export type ZoomConfig = {
     enabled: boolean;
     blockNative: boolean;
-    baseLevel: number;
+    level: number;
 };
 
 const defaultZoom = {
-    enabled: true,
-    baseLevel: 2,
+    enabled: false,
+    level: 2,
     blockNative: true,
 } satisfies ZoomConfig;
 
@@ -48,6 +48,7 @@ export default class ZoomHandler {
         },
         level = this.zoomLevel
     ) => {
+        if (!this.config.enabled) return;
         if (!this.isZoomed) {
             this.startTrackingMouse();
             this.ui.display.element.style.transformOrigin = `${
@@ -99,12 +100,14 @@ export default class ZoomHandler {
     };
 
     public listener = ({ clientX, clientY, target }: MouseEvent) => {
+        if (!this.config.enabled) return;
+
         if (!(target instanceof HTMLImageElement)) return;
 
         const bounds = target.getBoundingClientRect();
         const offsets = offsetPos(clientX, clientY, bounds);
         if (!this.isZoomed) {
-            this.zoomLevel = this.config.baseLevel;
+            this.zoomLevel = this.config.level;
             this.zoom(offsets);
         } else {
             this.unzoom();
