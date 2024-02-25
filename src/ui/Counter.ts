@@ -1,14 +1,20 @@
+import { CounterAnimationHandler } from '../animation/Counter';
 import { CounterConfig } from '../types/Animation';
-import { LightboxConfig } from '../types/Config';
 import { UIElement } from './Dock';
 
 const defaultCounter = {
     enabled: false,
     y: 'top',
     x: 'left',
+    animation: {
+        enabled: false,
+        duration: 0,
+        keyframes: 'gv_counter_update',
+    },
 } satisfies CounterConfig;
 
 export default class GVCounter extends UIElement<'span', 'extra'> {
+    private animation: CounterAnimationHandler;
     private config = {} as CounterConfig;
 
     private totalSpan = document.createElement('span');
@@ -30,6 +36,13 @@ export default class GVCounter extends UIElement<'span', 'extra'> {
         this.setPosition(this.config);
 
         this.element.appendChild(this.totalSpan);
+
+        console.log(this.config);
+
+        this.animation = new CounterAnimationHandler(
+            this.currentSpan,
+            this.config.animation
+        );
     }
 
     private setPosition = ({ x, y }: CounterConfig) => {
@@ -64,16 +77,8 @@ export default class GVCounter extends UIElement<'span', 'extra'> {
         this.updateTotal(total);
     }
 
-    private popIn() {
-        if (this.pendingTimeout) clearTimeout(this.pendingTimeout);
-        this.currentSpan.classList.add('updated');
-        this.pendingTimeout = setTimeout(() => {
-            this.currentSpan.classList.remove('updated');
-        }, 350);
-    }
-
     public set count(count: number) {
-        this.popIn();
+        if (this.animation.config.enabled) this.animation.popIn();
         this.updateCurrent(count);
     }
 

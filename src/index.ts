@@ -14,16 +14,21 @@ build({
     },
     counter: {
         enabled: true,
-        x: 'left',
-        y: 'top',
+        x: 'center',
+        y: 'bottom',
+        animation: {
+            enabled: true,
+            duration: 600,
+            keyframes: 'gv_counter_update-custom',
+        },
     },
     display: {
         animation: {
             enabled: true,
-            duration: 400,
+            duration: 600,
             morph: {
                 enabled: true,
-                duration: 100,
+                duration: 300,
             },
         },
     },

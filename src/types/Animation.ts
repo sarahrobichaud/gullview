@@ -19,8 +19,15 @@ export type AnimationConfig = {
     display: AnimationDisplayConfig;
 };
 
+export type AnimationCounterConfig = {
+    enabled: boolean;
+    duration: number;
+    keyframes: string;
+};
+
 export type CounterConfig = {
     enabled: boolean;
     y: 'top' | 'bottom';
     x: 'left' | 'center' | 'right';
+    animation?: Partial<AnimationCounterConfig>;
 };

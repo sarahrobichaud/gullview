@@ -23,7 +23,7 @@ export default class GVDisplay extends UIElement<'img', 'base'> {
 
         this.animation = new DisplayAnimationHandler(
             this.element,
-            config?.animation
+            this.config.animation
         );
     }
 }
