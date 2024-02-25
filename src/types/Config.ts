@@ -1,6 +1,6 @@
 /** Global */
 export type LightboxConfig = {
-    targetClass: string;
+    targetClass?: string;
     animation?: {
         display?: Partial<AnimationDisplayConfig>;
     };

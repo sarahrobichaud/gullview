@@ -26,21 +26,24 @@ export class UI {
     private _elements = {} as UIElements | UIElementsWithCounter;
 
     constructor(config: LightboxConfig) {
-        const { display: displayConfig, counter: counterConfig } = {
+        const { display: defaultDisplay, counter: defaultCounter } = {
             ...defaults,
-            ...config,
         };
 
         const root = new GVRoot(document.querySelector('.gullview')!);
         // Setup core
         this._elements.prev = new GVArrow('prev');
         this._elements.next = new GVArrow('next');
-        this._elements.display = new GVDisplay(displayConfig);
+        this._elements.display = new GVDisplay({
+            ...defaultDisplay,
+            ...config.display,
+        });
 
-        if (counterConfig.enabled) {
-            (this._elements as UIElementsWithCounter).counter = new GVCounter(
-                counterConfig
-            );
+        if (defaultCounter.enabled) {
+            (this._elements as UIElementsWithCounter).counter = new GVCounter({
+                ...defaultCounter,
+                ...config.counter,
+            });
         }
 
         this.modules('core').forEach((module) => {
