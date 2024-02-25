@@ -17,6 +17,8 @@ export default class Gullview {
     public ui: UI;
 
     constructor(config: LightboxConfig, ui: UI, images: Element[]) {
+        if ('counter' in ui.elements) ui.elements.counter.total = images.length;
+
         this.ui = ui;
         this.images = images;
         this.config = config;
@@ -27,7 +29,7 @@ export default class Gullview {
             document.querySelectorAll(`.${config.targetClass}`)
         );
 
-        const ui = new UI(config.display);
+        const ui = new UI(config);
 
         ui.zoomManager = new ZoomManager(ui, config.zoom);
 
@@ -39,6 +41,10 @@ export default class Gullview {
     }
 
     private set currentImage(value: ImageObject) {
+        if ('counter' in this.ui.elements) {
+            this.ui.elements.counter.count = value.index + 1;
+        }
+
         const jumping =
             (this.currentImage?.index === this.images.length - 1 &&
                 value.index === 0) ||

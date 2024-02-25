@@ -14,7 +14,7 @@ const displayDefaults = {
 } satisfies AnimationDisplayConfig;
 
 export class DisplayAnimationHandler {
-    public config = {} as UIConfig['animation']['display'];
+    public config = {} as AnimationDisplayConfig;
     private animationQueue: Array<ReturnType<typeof setTimeout>> = [];
     private element: HTMLElement;
 

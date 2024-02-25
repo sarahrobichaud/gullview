@@ -44,9 +44,47 @@
 .gv__counter {
     position: absolute;
     top: 1rem;
+    color: var(--gv-counter-clr);
     left: 1rem;
     opacity: 0.6;
-    font-size: 1.2rem;
+    z-index: 100;
+    font-size: var(--gv-counter-fs);
+    font-family: var(--gv-counter-ff);
+    font-weight: bold;
+}
+
+.gv__counter.y-top {
+    top: 1rem;
+    bottom: auto;
+}
+
+.gv__counter.y-bottom {
+    top: auto;
+    bottom: 1rem;
+}
+
+.gv__counter.x-left {
+    left: 1rem;
+    right: auto;
+}
+
+.gv__counter.x-right {
+    left: auto;
+    right: 1rem;
+}
+
+.gv__counter.x-center {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.gv__counter.total {
+    opacity: 0.4;
+    position: static;
+}
+.gv__counter.current {
+    opacity: 1;
+    position: static;
 }
 
 .gv__arrow {
@@ -59,6 +97,7 @@
     opacity: 0.6;
     transition: transform 200ms ease-in-out, opacity 200ms ease-in-out;
 }
+
 .gv__arrow:hover {
     cursor: pointer;
     transform: scale(1.4);
@@ -70,7 +109,7 @@
     opacity: 0.3;
 }
 .gv__arrow svg {
-    stroke: var(--gv-arrow-color);
+    stroke: var(--gv-arrow-clr);
 }
 
 .gv__dock {

@@ -9,8 +9,13 @@ export const build = (config: LightboxConfig) => {
 build({
     targetClass: 'gv_src',
     zoom: {
-        enabled: false,
-        level: 1.5,
+        enabled: true,
+        level: 3,
+    },
+    counter: {
+        enabled: true,
+        x: 'left',
+        y: 'top',
     },
     display: {
         animation: {
@@ -18,7 +23,7 @@ build({
             duration: 400,
             morph: {
                 enabled: true,
-                duration: 200,
+                duration: 100,
             },
         },
     },

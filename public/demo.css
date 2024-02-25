@@ -1,6 +1,9 @@
 :root {
-    --foreground-color: #000;
-    --gv-arrow-color: #fff;
+    --foreground-clr: #000;
+    --gv-arrow-clr: #fff;
+    --gv-counter-clr: #fff;
+    --gv-counter-fs: 2rem;
+    --gv-counter-ff: monospace;
     /* --gv--foreground-color: #000; */
     /* fonts */
     --fs-xl: 3rem;
@@ -25,7 +28,7 @@
 }
 
 body {
-    color: var(--foreground-color);
+    color: var(--foreground-clr);
     background: rgba(0, 0, 50, 0.9);
     background: rgb(246, 244, 243); /* sh/*
   /* background-color: #f4f4f4; */

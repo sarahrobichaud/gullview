@@ -1,7 +1,11 @@
 import ZoomManager from './Zoom';
 import { AnimationHandler } from './types/Animation';
 import { LightboxConfig } from './types/Config';
-import { ImageObject, UIElements } from './types/Gullview';
+import {
+    ImageObject,
+    UIElements,
+    UIElementsWithCounter,
+} from './types/Gullview';
 import GVArrow from './ui/Arrow';
 import GVRoot from './ui/Base';
 import GVCounter from './ui/Counter';
@@ -16,31 +20,35 @@ export class UI {
     private _zoomManager: ZoomManager;
 
     private background: HTMLDivElement;
-    private _elements = {} as UIElements;
+    private _elements = {} as UIElements | UIElementsWithCounter;
 
-    constructor(displayConfig: LightboxConfig['display']) {
-        // Setup root
+    constructor(config: LightboxConfig) {
+        const { display: displayConfig, counter: counterConfig } = config;
         const root = new GVRoot(document.querySelector('.gullview')!);
-
         // Setup core
         this._elements.prev = new GVArrow('prev');
         this._elements.next = new GVArrow('next');
         this._elements.display = new GVDisplay(displayConfig);
 
-        // Setup extra
-        this._elements.counter = new GVCounter();
-
-        root.element.appendChild(this.elements.display.element);
-
-        this.background = root.element;
+        if (counterConfig?.enabled) {
+            (this._elements as UIElementsWithCounter).counter = new GVCounter(
+                counterConfig
+            );
+        }
 
         this.modules('core').forEach((module) => {
-            root.element.appendChild(module.element);
+            root.element.prepend(module.element);
         });
+        root.element.append(this.elements.display.element);
 
-        console.log(this.modules('base'));
-        console.log(this.modules('core'));
-        console.log(this.modules('extra'));
+        // Setup extra
+        // this._elements.counter = new GVCounter();
+        this.background = root.element;
+
+        // Extra
+        this.modules('extra').forEach((module) => {
+            root.element.prepend(module.element);
+        });
 
         root.element.addEventListener('click', this.close.bind(this));
     }
