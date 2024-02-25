@@ -6,6 +6,8 @@ import { isGVDisplayElement } from './types/Gullview';
 
 import type { ImageObject } from './types/Gullview';
 import type { LightboxConfig } from './types/Config';
+import GVArrow from './ui/Arrow';
+import GVDisplay from './ui/Display';
 
 export default class Gullview {
     private _images: Array<ImageObject>;
@@ -25,15 +27,7 @@ export default class Gullview {
             document.querySelectorAll(`.${config.targetClass}`)
         );
 
-        const ui = new UI();
-
-        ui.animationHandlers.set(
-            'display',
-            new DisplayAnimationHandler(
-                ui.display.element,
-                config.animation?.display
-            )
-        );
+        const ui = new UI(config.display);
 
         ui.zoomManager = new ZoomManager(ui, config.zoom);
 
@@ -136,22 +130,21 @@ export default class Gullview {
             );
         });
 
-        this.ui.elementList.forEach(([key, element]) => {
-            if (isGVDisplayElement(element)) return;
-
-            switch (key) {
-                case 'prev':
-                    element.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.handlePrev();
-                    });
-                    break;
-                case 'next':
-                    element.addEventListener('click', (e) => {
+        this.ui.modules('core').forEach((module) => {
+            if (module instanceof GVArrow) {
+                if (module.direction === 'next')
+                    return module.element.addEventListener('click', (e) => {
                         e.stopPropagation();
                         this.handleNext();
                     });
-                    break;
+
+                if (module.direction === 'prev')
+                    return module.element.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.handlePrev();
+                    });
+
+                return;
             }
         });
     };

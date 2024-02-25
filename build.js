@@ -21,11 +21,11 @@ const esm = esbuild.build({
     outfile: 'dist/gullview.js',
 });
 
-const cjs = esbuild.build({
-    ...config,
-    format: 'cjs',
-    outfile: 'dist/gullview.mjs',
-});
+// const cjs = esbuild.build({
+//     ...config,
+//     format: 'cjs',
+//     outfile: 'dist/gullview.mjs',
+// });
 
 const minStyles = esbuild.build({
     entryPoints: ['public/gullview.css'],
@@ -39,7 +39,7 @@ const styles = esbuild.build({
     outfile: 'dist/css/gullview.css',
 });
 
-await Promise.all([iife, esm, cjs, minStyles, styles]).catch((e) => {
+await Promise.all([iife, esm, minStyles, styles]).catch((e) => {
     console.error(e);
     process.exit(1);
 });

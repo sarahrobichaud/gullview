@@ -9,6 +9,12 @@ export type LightboxConfig = {
     };
     zoom?: Partial<ZoomConfig>;
     counter?: Partial<CounterConfig>;
+    display?: Partial<DisplayConfig>;
+};
+
+export type DisplayConfig = {
+    rounded: boolean;
+    animation?: Partial<AnimationDisplayConfig>;
 };
 
 export type UIConfig = {

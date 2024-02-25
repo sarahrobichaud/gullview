@@ -9,16 +9,16 @@ export const build = (config: LightboxConfig) => {
 build({
     targetClass: 'gv_src',
     zoom: {
-        enabled: true,
-        level: 3,
+        enabled: false,
+        level: 1.5,
     },
-    animation: {
-        display: {
+    display: {
+        animation: {
             enabled: true,
-            duration: 600,
+            duration: 400,
             morph: {
                 enabled: true,
-                duration: 400,
+                duration: 200,
             },
         },
     },

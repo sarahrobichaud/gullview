@@ -1,6 +1,12 @@
 import ZoomManager from './Zoom';
 import { AnimationHandler } from './types/Animation';
-import { ImageObject, UIElement } from './types/Gullview';
+import { LightboxConfig } from './types/Config';
+import { ImageObject, UIElements } from './types/Gullview';
+import GVArrow from './ui/Arrow';
+import GVRoot from './ui/Base';
+import GVCounter from './ui/Counter';
+import GVDisplay from './ui/Display';
+import { ModuleType } from './ui/Dock';
 import { allowScroll, blockScroll } from './utils/scroll';
 
 export class UI {
@@ -9,41 +15,35 @@ export class UI {
 
     private _zoomManager: ZoomManager;
 
-    private _background: HTMLDivElement;
-    private _display: HTMLImageElement;
-    private _elements = {} as UIElement;
+    private background: HTMLDivElement;
+    private _elements = {} as UIElements;
 
-    constructor() {
-        this.animationHandlers = new Map();
-        this.background = document.querySelector('.gullview');
+    constructor(displayConfig: LightboxConfig['display']) {
+        // Setup root
+        const root = new GVRoot(document.querySelector('.gullview')!);
 
-        const display = document.createElement('img');
+        // Setup core
+        this._elements.prev = new GVArrow('prev');
+        this._elements.next = new GVArrow('next');
+        this._elements.display = new GVDisplay(displayConfig);
 
-        display.classList.add('gv__display');
-        display.setAttribute('alt', 'Gullview display');
+        // Setup extra
+        this._elements.counter = new GVCounter();
 
-        this._display = display;
+        root.element.appendChild(this.elements.display.element);
 
-        this._elements = {
-            prev: this.createArrow('prev'),
-            next: this.createArrow('next'),
-            display: this.display,
-        } satisfies UIElement;
-        //
-        this.background.appendChild(display);
+        this.background = root.element;
 
-        this.elementList.forEach(([_key, uiElem]) => {
-            if (!('animation' in uiElem)) {
-                return this.background.appendChild(uiElem);
-            } else {
-                return this.background.appendChild(uiElem.element);
-            }
+        this.modules('core').forEach((module) => {
+            root.element.appendChild(module.element);
         });
 
-        this.background.addEventListener('click', this.close.bind(this));
-    }
+        console.log(this.modules('base'));
+        console.log(this.modules('core'));
+        console.log(this.modules('extra'));
 
-    /* Handlers */
+        root.element.addEventListener('click', this.close.bind(this));
+    }
 
     public get zoomManager(): ZoomManager {
         return this._zoomManager;
@@ -58,14 +58,12 @@ export class UI {
         this._zoomManager = value;
     }
 
-    public get display(): UIElement['display'] {
-        return {
-            element: this._display,
-            kind: 'display',
-            animation: this.animationHandlers.get('display') || null,
-        };
-    }
+    private get display(): GVDisplay {
+        if (!this._elements.display)
+            throw new Error('Display not initialized properly.');
 
+        return this._elements.display;
+    }
     /**
      * Returns an object of UI elements
      */
@@ -73,41 +71,16 @@ export class UI {
         return this._elements;
     }
 
+    public modules = (type: ModuleType) => {
+        return Object.values(this._elements).filter(
+            (element) => element.type === type
+        );
+    };
     /**
      * Returns an array of key-value pairs of the UI elements
      */
     public get elementList() {
         return Object.entries(this.elements);
-    }
-
-    private get background(): HTMLDivElement {
-        return this._background;
-    }
-
-    private set background(value: unknown) {
-        if (!value)
-            throw new Error('No elements with a class of "lightbox" found');
-
-        if (!(value instanceof HTMLDivElement))
-            throw new Error('Lightbox must be a div');
-
-        this._background = value;
-    }
-
-    private createArrow(dir: 'prev' | 'next'): HTMLButtonElement {
-        const arrowContainer = document.createElement('button');
-
-        const leftArrow =
-            '<svg xlmns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>';
-        const rightArrow =
-            '<svg xlmns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
-
-        arrowContainer.innerHTML = dir === 'prev' ? leftArrow : rightArrow;
-
-        arrowContainer.classList.add('gv__arrow', dir);
-        this.elements[dir] = arrowContainer;
-        this.background.appendChild(arrowContainer);
-        return arrowContainer;
     }
 
     public open = ({ target }: MouseEvent) => {

@@ -1,23 +1,23 @@
 import { UI } from '../UI';
 import { DockConfig } from '../types/Config';
 
-export class UIElement {
+export type ModuleType = 'base' | 'core' | 'extra';
+export class UIElement<
+    TElement extends keyof HTMLElementTagNameMap,
+    TType extends ModuleType
+> {
     private prefix = 'gv';
-    public element: HTMLElement;
+    public name: string;
+    public type: TType;
+    public element: HTMLElementTagNameMap[TElement];
 
-    constructor(
-        name: string,
-        tag: keyof HTMLElementTagNameMap,
-        container: HTMLElement,
-        text?: string
-    ) {
+    constructor(name: string, tag: TElement, type: TType) {
         const element = document.createElement(tag);
 
         element.classList.add(`${this.prefix}__${name}`);
-        container.prepend(element);
 
-        if (text) element.textContent = text;
-
+        this.type = type;
+        this.name = name;
         this.element = element;
     }
 }
