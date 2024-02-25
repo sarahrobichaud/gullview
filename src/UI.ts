@@ -13,6 +13,8 @@ import GVDisplay from './ui/Display';
 import { ModuleType } from './ui/Dock';
 import { allowScroll, blockScroll } from './utils/scroll';
 
+import defaults from './config/defaults';
+
 export class UI {
     public animationHandlers: Map<string, AnimationHandler>;
     public isOpen: boolean = false;
@@ -23,14 +25,18 @@ export class UI {
     private _elements = {} as UIElements | UIElementsWithCounter;
 
     constructor(config: LightboxConfig) {
-        const { display: displayConfig, counter: counterConfig } = config;
+        const { display: displayConfig, counter: counterConfig } = {
+            ...defaults,
+            ...config,
+        };
+
         const root = new GVRoot(document.querySelector('.gullview')!);
         // Setup core
         this._elements.prev = new GVArrow('prev');
         this._elements.next = new GVArrow('next');
         this._elements.display = new GVDisplay(displayConfig);
 
-        if (counterConfig?.enabled) {
+        if (counterConfig.enabled) {
             (this._elements as UIElementsWithCounter).counter = new GVCounter(
                 counterConfig
             );

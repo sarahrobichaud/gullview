@@ -2,17 +2,13 @@ import { UI } from './UI';
 import { LightboxConfig } from './types/Config';
 import { offsetPos } from './utils/position';
 
+import defaults from './config/defaults';
+
 export type ZoomConfig = {
     enabled: boolean;
     blockNative: boolean;
     level: number;
 };
-
-const defaultZoom = {
-    enabled: false,
-    level: 2,
-    blockNative: true,
-} satisfies ZoomConfig;
 
 export default class ZoomHandler {
     public readonly config = {} as ZoomConfig;
@@ -21,7 +17,7 @@ export default class ZoomHandler {
     public zoomLevel: number;
 
     constructor(ui: UI, config: LightboxConfig['zoom']) {
-        this.config = { ...defaultZoom, ...config };
+        this.config = { ...defaults.zoom, ...config };
         this.ui = ui;
         this.zoomLevel = 1;
 

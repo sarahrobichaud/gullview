@@ -2,13 +2,7 @@ import { DisplayAnimationHandler } from '../animation/Display';
 import { DisplayConfig, LightboxConfig } from '../types/Config';
 import { UIElement } from './Dock';
 
-const defaultDisplay = {
-    rounded: true,
-    animation: {
-        enabled: true,
-        duration: 600,
-    },
-} as DisplayConfig;
+import defaults from '@/config/defaults';
 
 export default class GVDisplay extends UIElement<'img', 'base'> {
     public animation: DisplayAnimationHandler;
@@ -19,7 +13,7 @@ export default class GVDisplay extends UIElement<'img', 'base'> {
         this.element.classList.add('gv__display');
         this.element.setAttribute('alt', 'Gullview display');
 
-        this.config = { ...defaultDisplay, ...config };
+        this.config = { ...defaults.display, ...config };
 
         this.animation = new DisplayAnimationHandler(
             this.element,

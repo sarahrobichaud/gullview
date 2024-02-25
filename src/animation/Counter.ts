@@ -1,10 +1,5 @@
 import { AnimationCounterConfig } from '../types/Animation';
-
-const counterDefaults = {
-    enabled: false,
-    duration: 300,
-    keyframes: 'gv_counter_update',
-} satisfies AnimationCounterConfig;
+import defaults from '@config/defaults';
 
 export class CounterAnimationHandler {
     public config = {} as AnimationCounterConfig;
@@ -14,7 +9,7 @@ export class CounterAnimationHandler {
     constructor(elem: HTMLElement, config?: Partial<AnimationCounterConfig>) {
         this.element = elem;
 
-        this.config = { ...counterDefaults, ...config };
+        this.config = { ...defaults.counter.animation, ...config };
 
         this.injectCSSClasses();
     }
@@ -23,14 +18,13 @@ export class CounterAnimationHandler {
         const head = document.head || document.getElementsByTagName('head')[0];
         const style = document.createElement('style');
 
-        const keyFrames = this.config.keyframes || counterDefaults.keyframes;
-        const duration =
-            (this.config?.duration || counterDefaults.duration) / 2;
+        const keyFrames = this.config.keyframes;
+        const duration = this.config.duration;
 
         const css = `
             .gv__counter.current.updated {
-                animation: ${keyFrames} ${duration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
-                -webkit-animation: ${keyFrames} ${duration}ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+                animation: ${keyFrames} ${duration}ms ease-in-out forwards;
+                -webkit-animation: ${keyFrames} ${duration}ms ease-in-out forwards;
             }
         `;
         head.appendChild(style);

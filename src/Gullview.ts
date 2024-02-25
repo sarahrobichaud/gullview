@@ -1,13 +1,11 @@
+import GVArrow from './ui/Arrow';
+import defaults from './config/defaults';
 import ZoomManager from './Zoom';
 
-import { DisplayAnimationHandler } from './animation/Display';
 import { UI } from './UI';
-import { isGVDisplayElement } from './types/Gullview';
 
 import type { ImageObject } from './types/Gullview';
 import type { LightboxConfig } from './types/Config';
-import GVArrow from './ui/Arrow';
-import GVDisplay from './ui/Display';
 
 export default class Gullview {
     private _images: Array<ImageObject>;
@@ -24,9 +22,13 @@ export default class Gullview {
         this.config = config;
     }
 
-    public static build(config: LightboxConfig) {
+    public static build(config?: LightboxConfig) {
+        config = { ...defaults, ...config };
+
         const images = Array.from(
-            document.querySelectorAll(`.${config.targetClass}`)
+            document.querySelectorAll(
+                `.${config.targetClass || defaults.targetClass}`
+            )
         );
 
         const ui = new UI(config);

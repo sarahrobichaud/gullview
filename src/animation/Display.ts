@@ -1,17 +1,7 @@
 import { AnimationDisplayConfig } from '../types/Animation';
-import { UIConfig } from '../types/Config';
 import { ImageObject } from '../types/Gullview';
 
-const displayDefaults = {
-    enabled: false,
-    duration: 600,
-    next: 'gv_next',
-    prev: 'gv_prev',
-    morph: {
-        enabled: false,
-        duration: 600,
-    },
-} satisfies AnimationDisplayConfig;
+import defaults from '@/config/defaults';
 
 export class DisplayAnimationHandler {
     public config = {} as AnimationDisplayConfig;
@@ -21,8 +11,11 @@ export class DisplayAnimationHandler {
     constructor(elem: HTMLElement, config?: Partial<AnimationDisplayConfig>) {
         this.element = elem;
 
-        const baseConfig = { ...displayDefaults, ...config };
-        const morphConfig = { ...displayDefaults.morph, ...config?.morph };
+        const baseConfig = { ...defaults.display.animation, ...config };
+        const morphConfig = {
+            ...defaults.display.animation.morph,
+            ...config?.morph,
+        };
         this.config = { ...baseConfig, morph: morphConfig };
 
         this.injectCSSClasses();
@@ -32,12 +25,11 @@ export class DisplayAnimationHandler {
         const head = document.head || document.getElementsByTagName('head')[0];
         const style = document.createElement('style');
 
-        const nextKF = this.config?.next || displayDefaults.next;
-        const prevKF = this.config?.prev || displayDefaults.prev;
-        const transitionDuration =
-            (this.config?.duration || displayDefaults.duration) / 2;
+        const nextKF = this.config.next;
+        const prevKF = this.config.prev;
+        const transitionDuration = this.config.duration / 2;
 
-        const morphDuration = this.config.morph!.duration;
+        const morphDuration = this.config.morph.duration;
 
         const css = `
 			.gv__display.slideIn.next {
