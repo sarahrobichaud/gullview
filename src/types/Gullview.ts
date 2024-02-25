@@ -1,7 +1,7 @@
-import GVArrow from '../ui/Arrow';
-import GVContainer from '../ui/Base';
-import GVCounter from '../ui/Counter';
-import GVDisplay from '../ui/Display';
+import GVArrow from '@components/Arrow';
+import GVContainer from '@components/Base';
+import GVCounter from '@components/Counter';
+import GVDisplay from '@components/Display';
 
 export type ImageObject = {
     parent: HTMLElement;

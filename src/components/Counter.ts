@@ -1,9 +1,9 @@
-import { CounterAnimationHandler } from '../animation/Counter';
+import { CounterAnimationHandler } from '@animation/Counter';
 import { CounterConfig } from '@/types/Config';
-import { UIElement } from './Dock';
-import defaults from '@/config/defaults';
+import { GVModule } from '@components/GVModule';
+import defaults from '@config/defaults';
 
-export default class GVCounter extends UIElement<'span', 'extra'> {
+export default class GVCounter extends GVModule<'span', 'extra'> {
     private animation: CounterAnimationHandler;
     private config = {} as CounterConfig;
 

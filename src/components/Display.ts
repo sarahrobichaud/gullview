@@ -1,10 +1,10 @@
-import { DisplayAnimationHandler } from '../animation/Display';
+import { DisplayAnimationHandler } from '@animation/Display';
 import { DisplayConfig, LightboxConfig } from '@/types/Config';
-import { UIElement } from './Dock';
+import { GVModule } from '@components/GVModule';
 
-import defaults from '@/config/defaults';
+import defaults from '@config/defaults';
 
-export default class GVDisplay extends UIElement<'img', 'base'> {
+export default class GVDisplay extends GVModule<'img', 'base'> {
     public animation: DisplayAnimationHandler;
     public config = {} as DisplayConfig;
 

@@ -1,8 +1,8 @@
-import { UI } from './UI';
+import { UI } from '@/UI';
 import { LightboxConfig, ZoomConfig } from '@/types/Config';
-import { offsetPos } from './utils/position';
+import { offsetPos } from '@utils/position';
 
-import defaults from './config/defaults';
+import defaults from '@config/defaults';
 
 export default class ZoomHandler {
     public readonly config = {} as ZoomConfig;

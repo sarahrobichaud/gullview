@@ -1,16 +1,19 @@
-import ZoomManager from './Zoom';
 import { LightboxConfig } from '@/types/Config';
 import {
     ImageObject,
     UIElements,
     UIElementsWithCounter,
-} from './types/Gullview';
-import GVArrow from './ui/Arrow';
-import GVRoot from './ui/Base';
-import GVCounter from './ui/Counter';
-import GVDisplay from './ui/Display';
-import { ModuleType } from './ui/Dock';
-import { allowScroll, blockScroll } from './utils/scroll';
+} from '@/types/Gullview';
+
+import ZoomManager from '@/Zoom';
+
+import GVArrow from '@components/Arrow';
+import GVRoot from '@components/Base';
+import GVCounter from '@components/Counter';
+import GVDisplay from '@components/Display';
+import { ModuleType } from '@components/GVModule';
+
+import { allowScroll, blockScroll } from '@utils/scroll';
 
 import defaults from '@config/defaults';
 
@@ -76,9 +79,7 @@ export class UI {
 
         return this._elements.display;
     }
-    /**
-     * Returns an object of UI elements
-     */
+
     public get elements() {
         return this._elements;
     }

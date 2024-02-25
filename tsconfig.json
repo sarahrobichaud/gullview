@@ -1,12 +1,19 @@
 {
-  "compilerOptions": {
-    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
-    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
-    "strict": true /* Enable all strict type-checking options. */,
-    "lib": ["ES2017", "DOM"],
-    "noUnusedParameters": true,
-    "strictPropertyInitialization": false
-  },
+    "compilerOptions": {
+        "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
+        "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+        "strict": true /* Enable all strict type-checking options. */,
+        "lib": ["ES2017", "DOM"],
+        "noUnusedParameters": true,
+        "strictPropertyInitialization": false,
+        "paths": {
+            "@config/*": ["./src/config/*"],
+            "@/*": ["./src/*"],
+            "@components/*": ["./src/components/*"],
+            "@animation/*": ["./src/animation/*"],
+            "@utils/*": ["./src/utils/*"]
+        }
+    },
 
-  "include": ["src/**/*.ts"]
+    "include": ["src/**/*.ts"]
 }

@@ -1,11 +1,11 @@
-import GVArrow from './ui/Arrow';
-import defaults from './config/defaults';
-import ZoomManager from './Zoom';
+import GVArrow from '@components/Arrow';
+import defaults from '@config/defaults';
+import ZoomManager from '@/Zoom';
 
-import { UI } from './UI';
+import { UI } from '@/UI';
 
-import type { ImageObject } from './types/Gullview';
-import type { LightboxConfig } from './types/Config';
+import type { ImageObject } from '@/types/Gullview';
+import type { LightboxConfig } from '@/types/Config';
 
 export default class Gullview {
     private _images: Array<ImageObject>;
