@@ -84,7 +84,24 @@
 }
 .gv__counter.current {
     opacity: 1;
+    display: inline-block;
     position: static;
+}
+.gv__counter.current.updated {
+    animation: gv_counter_update 350ms ease-in-out forwards;
+}
+
+@keyframes gv_counter_update {
+    0% {
+        rotate: -10deg;
+        opacity: 0;
+        scale: 4;
+    }
+    100% {
+        rotate: 0deg;
+        opacity: 1;
+        scale: 1;
+    }
 }
 
 .gv__arrow {

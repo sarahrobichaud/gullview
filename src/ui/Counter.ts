@@ -14,6 +14,8 @@ export default class GVCounter extends UIElement<'span', 'extra'> {
     private totalSpan = document.createElement('span');
     private currentSpan = document.createElement('span');
 
+    private pendingTimeout: number | null = null;
+
     //State
 
     constructor(config?: Partial<CounterConfig>) {
@@ -30,7 +32,7 @@ export default class GVCounter extends UIElement<'span', 'extra'> {
         this.element.appendChild(this.totalSpan);
     }
 
-    private setPosition = ({ x, y }) => {
+    private setPosition = ({ x, y }: CounterConfig) => {
         switch (x) {
             case 'left':
                 this.element.classList.add('x-left');
@@ -62,12 +64,21 @@ export default class GVCounter extends UIElement<'span', 'extra'> {
         this.updateTotal(total);
     }
 
+    private popIn() {
+        if (this.pendingTimeout) clearTimeout(this.pendingTimeout);
+        this.currentSpan.classList.add('updated');
+        this.pendingTimeout = setTimeout(() => {
+            this.currentSpan.classList.remove('updated');
+        }, 350);
+    }
+
     public set count(count: number) {
+        this.popIn();
         this.updateCurrent(count);
     }
 
     private updateTotal = (value: number) => {
-        this.totalSpan.innerHTML = `/ ${value} `;
+        this.totalSpan.innerHTML = `/${value} `;
     };
 
     private updateCurrent = (value: number) => {
