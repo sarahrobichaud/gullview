@@ -1,6 +1,5 @@
 import ZoomManager from './Zoom';
-import { AnimationHandler } from './types/Animation';
-import { LightboxConfig } from './types/Config';
+import { LightboxConfig } from '@/types/Config';
 import {
     ImageObject,
     UIElements,
@@ -13,10 +12,9 @@ import GVDisplay from './ui/Display';
 import { ModuleType } from './ui/Dock';
 import { allowScroll, blockScroll } from './utils/scroll';
 
-import defaults from './config/defaults';
+import defaults from '@config/defaults';
 
 export class UI {
-    public animationHandlers: Map<string, AnimationHandler>;
     public isOpen: boolean = false;
 
     private _zoomManager: ZoomManager;

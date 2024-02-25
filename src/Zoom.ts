@@ -1,14 +1,8 @@
 import { UI } from './UI';
-import { LightboxConfig } from './types/Config';
+import { LightboxConfig, ZoomConfig } from '@/types/Config';
 import { offsetPos } from './utils/position';
 
 import defaults from './config/defaults';
-
-export type ZoomConfig = {
-    enabled: boolean;
-    blockNative: boolean;
-    level: number;
-};
 
 export default class ZoomHandler {
     public readonly config = {} as ZoomConfig;

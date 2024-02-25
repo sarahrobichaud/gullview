@@ -1,4 +1,4 @@
-import { AnimationDisplayConfig } from '../types/Animation';
+import { AnimationDisplayConfig } from '@/types/Config';
 import { ImageObject } from '../types/Gullview';
 
 import defaults from '@/config/defaults';

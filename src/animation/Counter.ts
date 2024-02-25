@@ -1,4 +1,4 @@
-import { AnimationCounterConfig } from '../types/Animation';
+import { AnimationCounterConfig } from '@/types/Config';
 import defaults from '@config/defaults';
 
 export class CounterAnimationHandler {

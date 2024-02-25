@@ -1,5 +1,5 @@
 import { DisplayAnimationHandler } from '../animation/Display';
-import { DisplayConfig, LightboxConfig } from '../types/Config';
+import { DisplayConfig, LightboxConfig } from '@/types/Config';
 import { UIElement } from './Dock';
 
 import defaults from '@/config/defaults';

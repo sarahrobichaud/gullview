@@ -1,5 +1,5 @@
 import { CounterAnimationHandler } from '../animation/Counter';
-import { CounterConfig } from '../types/Animation';
+import { CounterConfig } from '@/types/Config';
 import { UIElement } from './Dock';
 import defaults from '@/config/defaults';
 

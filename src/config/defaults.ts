@@ -1,6 +1,4 @@
-import { DisplayConfig } from '@/types/Config';
-import { CounterConfig } from '../types/Animation';
-import { ZoomConfig } from '@/Zoom';
+import { DisplayConfig, ZoomConfig, CounterConfig } from '@/types/Config';
 
 export default {
     targetClass: 'gv_src',
