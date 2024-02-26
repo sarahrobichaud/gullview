@@ -23,8 +23,8 @@ export type AnimationDisplayMorphConfig = {
 export type AnimationDisplayConfig = {
     enabled: boolean;
     duration: number;
-    next: string;
-    prev: string;
+    keyframes_next: string;
+    keyframes_prev: string;
     morph: Partial<AnimationDisplayMorphConfig>;
 };
 
@@ -43,7 +43,7 @@ export type CounterConfig = {
 export type AnimationCounterConfig = {
     enabled: boolean;
     duration: number;
-    keyframes: string;
+    keyframes_updateCurrent: string;
 };
 
 /** Zoom */

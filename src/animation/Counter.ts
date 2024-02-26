@@ -18,7 +18,7 @@ export class CounterAnimationHandler {
         const head = document.head || document.getElementsByTagName('head')[0];
         const style = document.createElement('style');
 
-        const keyFrames = this.config.keyframes;
+        const keyFrames = this.config.keyframes_updateCurrent;
         const duration = this.config.duration;
 
         const css = `

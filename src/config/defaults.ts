@@ -9,18 +9,18 @@ export default {
         animation: {
             enabled: false,
             duration: 400,
-            keyframes: 'gv_counter_update',
+            keyframes_updateCurrent: 'gv_counter_update',
         },
     },
     display: {
         rounded: true,
         animation: {
-            prev: 'gv_display_prev',
-            next: 'gv_display_next',
+            keyframes_prev: 'gv_display_prev',
+            keyframes_next: 'gv_display_next',
             enabled: false,
             duration: 400,
             morph: {
-                enabled: true,
+                enabled: false,
                 duration: 450,
             },
         },

@@ -30,20 +30,19 @@ export class UI {
             ...defaults,
         };
 
+        const counterConfig = { ...defaultCounter, ...config.counter };
+        const displayConfig = { ...defaultDisplay, ...config.display };
+
         const root = new GVRoot(document.querySelector('.gullview')!);
-        // Setup core
+
         this._elements.prev = new GVArrow('prev');
         this._elements.next = new GVArrow('next');
-        this._elements.display = new GVDisplay({
-            ...defaultDisplay,
-            ...config.display,
-        });
+        this._elements.display = new GVDisplay(displayConfig);
 
-        if (defaultCounter.enabled) {
-            (this._elements as UIElementsWithCounter).counter = new GVCounter({
-                ...defaultCounter,
-                ...config.counter,
-            });
+        if (counterConfig.enabled) {
+            (this._elements as UIElementsWithCounter).counter = new GVCounter(
+                counterConfig
+            );
         }
 
         this.modules('core').forEach((module) => {
@@ -51,11 +50,8 @@ export class UI {
         });
         root.element.append(this.elements.display.element);
 
-        // Setup extra
-        // this._elements.counter = new GVCounter();
         this.background = root.element;
 
-        // Extra
         this.modules('extra').forEach((module) => {
             root.element.prepend(module.element);
         });

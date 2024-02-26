@@ -25,8 +25,8 @@ export class DisplayAnimationHandler {
         const head = document.head || document.getElementsByTagName('head')[0];
         const style = document.createElement('style');
 
-        const nextKF = this.config.next;
-        const prevKF = this.config.prev;
+        const nextKF = this.config.keyframes_next;
+        const prevKF = this.config.keyframes_prev;
         const transitionDuration = this.config.duration / 2;
 
         const morphDuration = this.config.morph.duration;
