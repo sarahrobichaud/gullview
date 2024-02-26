@@ -1,11 +1,11 @@
-import ZoomManager from './Zoom';
+import GVArrow from '@components/Arrow';
+import defaults from '@config/defaults';
+import ZoomManager from '@/Zoom';
 
-import { DisplayAnimationHandler } from './animation/Display';
-import { UI } from './UI';
-import { isGVDisplayElement } from './types/Gullview';
+import { UI } from '@/UI';
 
-import type { ImageObject } from './types/Gullview';
-import type { LightboxConfig } from './types/Config';
+import type { ImageObject } from '@/types/Gullview';
+import type { LightboxConfig } from '@/types/Config';
 
 export default class Gullview {
     private _images: Array<ImageObject>;
@@ -15,25 +15,23 @@ export default class Gullview {
     public ui: UI;
 
     constructor(config: LightboxConfig, ui: UI, images: Element[]) {
+        if ('counter' in ui.elements) ui.elements.counter.total = images.length;
+
         this.ui = ui;
         this.images = images;
         this.config = config;
     }
 
-    public static build(config: LightboxConfig) {
+    public static build(config?: LightboxConfig) {
+        config = { ...defaults, ...config };
+
         const images = Array.from(
-            document.querySelectorAll(`.${config.targetClass}`)
-        );
-
-        const ui = new UI();
-
-        ui.animationHandlers.set(
-            'display',
-            new DisplayAnimationHandler(
-                ui.display.element,
-                config.animation?.display
+            document.querySelectorAll(
+                `.${config.targetClass || defaults.targetClass}`
             )
         );
+
+        const ui = new UI(config);
 
         ui.zoomManager = new ZoomManager(ui, config.zoom);
 
@@ -45,6 +43,10 @@ export default class Gullview {
     }
 
     private set currentImage(value: ImageObject) {
+        if ('counter' in this.ui.elements) {
+            this.ui.elements.counter.count = value.index + 1;
+        }
+
         const jumping =
             (this.currentImage?.index === this.images.length - 1 &&
                 value.index === 0) ||
@@ -136,23 +138,20 @@ export default class Gullview {
             );
         });
 
-        this.ui.elementList.forEach(([key, element]) => {
-            if (isGVDisplayElement(element)) return;
+        const arrows = [this.ui.elements.next, this.ui.elements.prev];
 
-            switch (key) {
-                case 'prev':
-                    element.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.handlePrev();
-                    });
-                    break;
-                case 'next':
-                    element.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.handleNext();
-                    });
-                    break;
-            }
+        arrows.forEach(({ direction, element }) => {
+            if (direction === 'next')
+                return element.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.handleNext();
+                });
+
+            if (direction === 'prev')
+                return element.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.handlePrev();
+                });
         });
     };
 }

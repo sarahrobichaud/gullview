@@ -1,5 +1,7 @@
-import { DisplayAnimationHandler } from '../animation/Display';
-import { AnimationHandler } from './Animation';
+import GVArrow from '@components/Arrow';
+import GVContainer from '@components/Base';
+import GVCounter from '@components/Counter';
+import GVDisplay from '@components/Display';
 
 export type ImageObject = {
     parent: HTMLElement;
@@ -11,24 +13,13 @@ export type ImageObject = {
     };
 };
 
-interface BaseGVElement<T> {
-    animation: T | null;
-}
-
-export interface GVDisplay extends BaseGVElement<DisplayAnimationHandler> {
-    element: HTMLImageElement;
-    kind: 'display';
-}
-
-export const isGVDisplayElement = (elem: unknown): elem is GVDisplay => {
-    if (typeof elem !== 'object' || elem === null) return false;
-    if (!('kind' in elem)) return false;
-
-    return elem.kind === 'display';
+export type UIElements = {
+    container: GVContainer;
+    prev: GVArrow;
+    next: GVArrow;
+    display: GVDisplay;
 };
 
-export type UIElement = {
-    prev: HTMLButtonElement;
-    next: HTMLButtonElement;
-    display: GVDisplay;
+export type UIElementsWithCounter = UIElements & {
+    counter: GVCounter;
 };

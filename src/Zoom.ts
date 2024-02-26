@@ -1,18 +1,8 @@
-import { UI } from './UI';
-import { LightboxConfig } from './types/Config';
-import { offsetPos } from './utils/position';
+import { UI } from '@/UI';
+import { LightboxConfig, ZoomConfig } from '@/types/Config';
+import { offsetPos } from '@utils/position';
 
-export type ZoomConfig = {
-    enabled: boolean;
-    blockNative: boolean;
-    level: number;
-};
-
-const defaultZoom = {
-    enabled: false,
-    level: 2,
-    blockNative: true,
-} satisfies ZoomConfig;
+import defaults from '@config/defaults';
 
 export default class ZoomHandler {
     public readonly config = {} as ZoomConfig;
@@ -21,7 +11,7 @@ export default class ZoomHandler {
     public zoomLevel: number;
 
     constructor(ui: UI, config: LightboxConfig['zoom']) {
-        this.config = { ...defaultZoom, ...config };
+        this.config = { ...defaults.zoom, ...config };
         this.ui = ui;
         this.zoomLevel = 1;
 
@@ -33,12 +23,13 @@ export default class ZoomHandler {
     }
 
     private handleCursorOffset(e: MouseEvent) {
+        const { element } = this.ui.elements.display;
         const { clientX, clientY } = e;
-        const bounds = this.ui.display.element.getBoundingClientRect();
+        const bounds = element.getBoundingClientRect();
         const offsets = offsetPos(clientX, clientY, bounds);
-        this.ui.display.element.style.transformOrigin = `${
-            offsets.offsetX * 100
-        }% ${offsets.offsetY * 100}%`;
+        element.style.transformOrigin = `${offsets.offsetX * 100}% ${
+            offsets.offsetY * 100
+        }%`;
     }
 
     public zoom = (
@@ -48,33 +39,35 @@ export default class ZoomHandler {
         },
         level = this.zoomLevel
     ) => {
+        const { display, next, prev } = this.ui.elements;
         if (!this.config.enabled) return;
         if (!this.isZoomed) {
             this.startTrackingMouse();
-            this.ui.display.element.style.transformOrigin = `${
-                offsetX * 100
-            }% ${offsetY * 100}%`;
-            this.ui.display.element.classList.add('zoomed');
-            this.ui.elements.prev.style.visibility = 'hidden';
-            this.ui.elements.next.style.visibility = 'hidden';
-            this.ui.display.element.style.transform = `scale(${level})`;
+            display.element.style.transformOrigin = `${offsetX * 100}% ${
+                offsetY * 100
+            }%`;
+            display.element.classList.add('zoomed');
+            prev.element.style.visibility = 'hidden';
+            next.element.style.visibility = 'hidden';
+            display.element.style.transform = `scale(${level})`;
             this.isZoomed = true;
             return;
         }
 
-        this.ui.display.element.style.transform = `scale(${level})`;
+        display.element.style.transform = `scale(${level})`;
         this.zoomLevel = level;
     };
 
     public unzoom = () => {
+        const { display, next, prev } = this.ui.elements;
         this.stopTrackingMouse();
-        this.ui.display.element.classList.remove('zoomed');
-        this.ui.display.element.style.transform = '';
-        this.ui.elements.prev.style.visibility = 'visible';
-        this.ui.elements.next.style.visibility = 'visible';
+        display.element.classList.remove('zoomed');
+        display.element.style.transform = '';
+        prev.element.style.visibility = 'visible';
+        next.element.style.visibility = 'visible';
 
         setTimeout(() => {
-            this.ui.display.element.style.transformOrigin = '';
+            display.element.style.transformOrigin = '';
         }, 200);
         this.zoomLevel = 1;
         this.isZoomed = false;

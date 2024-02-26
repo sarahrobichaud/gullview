@@ -1,6 +1,6 @@
 {
     "name": "@siteharbor/gullview",
-    "version": "0.1.0",
+    "version": "0.5.0",
     "description": "A lightbox library for images",
     "type": "module",
     "main": "dist/gullview.js",
