@@ -138,22 +138,20 @@ export default class Gullview {
             );
         });
 
-        this.ui.modules('core').forEach((module) => {
-            if (module instanceof GVArrow) {
-                if (module.direction === 'next')
-                    return module.element.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.handleNext();
-                    });
+        const arrows = [this.ui.elements.next, this.ui.elements.prev];
 
-                if (module.direction === 'prev')
-                    return module.element.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.handlePrev();
-                    });
+        arrows.forEach(({ direction, element }) => {
+            if (direction === 'next')
+                return element.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.handleNext();
+                });
 
-                return;
-            }
+            if (direction === 'prev')
+                return element.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.handlePrev();
+                });
         });
     };
 }

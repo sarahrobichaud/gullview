@@ -16,6 +16,7 @@ import { ModuleType } from '@components/GVModule';
 import { allowScroll, blockScroll } from '@utils/scroll';
 
 import defaults from '@config/defaults';
+import GVContainer from '@components/Base';
 
 export class UI {
     public isOpen: boolean = false;
@@ -38,6 +39,8 @@ export class UI {
         this._elements.prev = new GVArrow('prev');
         this._elements.next = new GVArrow('next');
         this._elements.display = new GVDisplay(displayConfig);
+        this._elements.container = root;
+        this.background = root.element;
 
         if (counterConfig.enabled) {
             (this._elements as UIElementsWithCounter).counter = new GVCounter(
@@ -48,9 +51,8 @@ export class UI {
         this.modules('core').forEach((module) => {
             root.element.prepend(module.element);
         });
-        root.element.append(this.elements.display.element);
 
-        this.background = root.element;
+        root.element.append(this.elements.display.element);
 
         this.modules('extra').forEach((module) => {
             root.element.prepend(module.element);
@@ -83,14 +85,23 @@ export class UI {
         return this._elements;
     }
 
-    public modules = (type: ModuleType) => {
-        return Object.values(this._elements).filter(
-            (element) => element.type === type
-        );
+    public modules = (
+        type?: ModuleType,
+        module?:
+            | typeof GVArrow
+            | typeof GVCounter
+            | typeof GVDisplay
+            | typeof GVContainer
+    ) => {
+        return Object.values(this._elements).filter((element) => {
+            if (type && module)
+                return element.type === type && element instanceof module;
+
+            if (type && !module) return element.type === type;
+
+            if (!type && !module) return true;
+        });
     };
-    /**
-     * Returns an array of key-value pairs of the UI elements
-     */
     public get elementList() {
         return Object.entries(this.elements);
     }
