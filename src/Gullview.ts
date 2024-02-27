@@ -33,8 +33,6 @@ export default class Gullview {
 
         const ui = new UI(config);
 
-        ui.zoomManager = new ZoomManager(ui, config.zoom);
-
         return new Gullview(config, ui, images);
     }
 

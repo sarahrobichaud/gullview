@@ -1,4 +1,6 @@
 node_modules
 dist
 package
+public/main.js
+public/main.js.map
 .vscode

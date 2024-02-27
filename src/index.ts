@@ -5,4 +5,17 @@ export const build = (config?: LightboxConfig) => {
     return Gullview.build(config);
 };
 
-const gv = Gullview.build().init();
+const gv = Gullview.build({
+    zoom: {
+        enabled: true,
+    },
+    counter: {
+        x: 'left',
+    },
+    display: {
+        animation: {
+            enabled: true,
+            morph: { enabled: true },
+        },
+    },
+}).init();

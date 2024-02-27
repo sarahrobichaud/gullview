@@ -21,7 +21,7 @@ import GVContainer from '@components/Base';
 export class UI {
     public isOpen: boolean = false;
 
-    private _zoomManager: ZoomManager;
+    public zoomManager: ZoomManager;
 
     private background: HTMLDivElement;
     private _elements = {} as UIElements | UIElementsWithCounter;
@@ -48,30 +48,27 @@ export class UI {
             );
         }
 
+        root.element.append(this.elements.display.element);
+
         this.modules('core').forEach((module) => {
             root.element.prepend(module.element);
         });
-
-        root.element.append(this.elements.display.element);
 
         this.modules('extra').forEach((module) => {
             root.element.prepend(module.element);
         });
 
         root.element.addEventListener('click', this.close.bind(this));
-    }
 
-    public get zoomManager(): ZoomManager {
-        return this._zoomManager;
-    }
+        this.zoomManager = new ZoomManager(this, config.zoom);
 
-    public set zoomManager(value: ZoomManager) {
-        if (value.config.enabled) {
-            this.display.element.addEventListener('click', value.listener);
+        if (this.zoomManager.config.enabled) {
+            this.display.element.addEventListener(
+                'click',
+                this.zoomManager.listener
+            );
             this.display.element.classList.add('zoomable');
         }
-
-        this._zoomManager = value;
     }
 
     private get display(): GVDisplay {
