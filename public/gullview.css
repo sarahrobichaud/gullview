@@ -191,8 +191,8 @@
         backdrop-filter: blur(0px);
     }
     100% {
-        background-color: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(40px);
+        background-color: var(--gv-background, transparent);
+        backdrop-filter: blur(60px);
         opacity: 1;
     }
 }
@@ -236,7 +236,7 @@
     }
 }
 
-@keyframes gv_next {
+@keyframes gv_display_next {
     0% {
         rotate: -10deg;
         filter: saturate(0);
@@ -251,7 +251,7 @@
         rotate: 0;
     }
 }
-@keyframes gv_prev {
+@keyframes gv_display_prev {
     0% {
         scale: 1;
         filter: saturate(1);

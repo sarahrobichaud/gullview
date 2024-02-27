@@ -8,7 +8,7 @@ export default {
         x: 'left',
         animation: {
             enabled: false,
-            duration: 400,
+            duration: 300,
             keyframes_updateCurrent: 'gv_counter_update',
         },
     },
@@ -18,10 +18,10 @@ export default {
             keyframes_prev: 'gv_display_prev',
             keyframes_next: 'gv_display_next',
             enabled: false,
-            duration: 400,
+            duration: 500,
             morph: {
                 enabled: false,
-                duration: 450,
+                duration: 250,
             },
         },
     },

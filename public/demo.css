@@ -1,9 +1,12 @@
 :root {
     --foreground-clr: #000;
+
     --gv-arrow-clr: #fff;
+
     --gv-counter-clr: #fff;
-    --gv-counter-fs: 4rem;
+    --gv-counter-fs: 1.5rem;
     --gv-counter-ff: monospace;
+    --gv-background: rgba(0, 0, 0, 0.8);
     /* --gv--foreground-color: #000; */
     /* fonts */
     --fs-xl: 3rem;
