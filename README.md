@@ -10,10 +10,6 @@ A lightbox library for images.
 
 # Installation
 
-```sh
-$ npm install @siteharbor/gullview
-```
-
 # Usage
 
 ### Via CDN
@@ -25,9 +21,9 @@ $ npm install @siteharbor/gullview
 ```js
 import Gullview from '@siteharbor/gullview';
 
-const gv = Gullview.build(); // Instantiate the class;
+const gv = Gullview.build();
 
-gv.init(); // Sets up listeners.
+gv.init();
 ```
 
 You can pass in a configuration object into the `build` method. See [configuration](#configuration).
@@ -188,8 +184,8 @@ This in and optional component that provides a count the image's total and the c
 
 | key                        | value   | default |
 | -------------------------- | ------- | ------- |
-| display.animation.enabled  | boolean | false   |
-| display.animation.duration | number  | false   |
+| counter.enabled            | boolean | false   |
+| counter.animation.duration | number  | false   |
 
 ## Custom CSS Keyframes
 
