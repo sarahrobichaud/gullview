@@ -19,7 +19,7 @@ A lightbox library for images.
 ### Module import
 
 ```js
-import Gullview from '@siteharbor/gullview';
+//import
 
 const gv = Gullview.build();
 
